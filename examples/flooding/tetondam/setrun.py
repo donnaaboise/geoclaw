@@ -58,10 +58,10 @@ def setrun(claw_pkg='geoclaw'):
     # Lower and upper edge of computational domain:
     dx = 0.000374360513991
     clawdata.lower[0] = 0
-    clawdata.upper[0] = 24979
+    clawdata.upper[0] = 48000
 
     clawdata.lower[1] = 0
-    clawdata.upper[1] = 5364;
+    clawdata.upper[1] = 17400;
 
 
 
@@ -115,7 +115,7 @@ def setrun(claw_pkg='geoclaw'):
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
         clawdata.num_output_times = 45
-        clawdata.tfinal = 60*45
+        clawdata.tfinal = 60
         clawdata.output_t0 = True  # output at initial (or restart) time?
 
     elif clawdata.output_style == 2:
@@ -365,8 +365,9 @@ def setgeo(rundata):
     # for topography, append lines of the form
     #    [topotype, minlevel, maxlevel, t1, t2, fname]
     # topo_data.topofiles.append([2, 1, 10, 0., 1.e10, 'bowl.topotype2'])
-    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'tetontopo']);
-
+    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonDamFloodPlain.topo']);
+    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonDamLargeLowRes.topo'])
+    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonDamSmallHiRes.topo'])
     # == setdtopo.data values ==
     dtopo_data = rundata.dtopo_data
     # for moving topography, append lines of the form :   (<= 1 allowed for now!)
