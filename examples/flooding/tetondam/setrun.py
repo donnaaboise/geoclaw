@@ -9,6 +9,12 @@ that will be read in by the Fortran code.
 import os
 import numpy as np
 
+try:
+    CLAW = os.environ['CLAW']
+except: 
+    raise Exception("*** Must First set CLAW environment variable")
+
+scratch_dir = os.path.join(CLAW, 'geoclaw', 'scratch')
 
 #------------------------------
 def setrun(claw_pkg='geoclaw'):
@@ -56,18 +62,18 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.num_dim = num_dim
 
     # Lower and upper edge of computational domain:
-    dx = 0.000374360513991
+#    dx = 0.000374360513991
     clawdata.lower[0] = 0
     clawdata.upper[0] = 48000
 
     clawdata.lower[1] = 0
-    clawdata.upper[1] = 17400;
+    clawdata.upper[1] = 17400
 
 
 
     # Number of grid cells: Coarsest grid
-    clawdata.num_cells[0] = 210
-    clawdata.num_cells[1] =  45
+    clawdata.num_cells[0] = 300
+    clawdata.num_cells[1] = 100
 
 
     # ---------------
@@ -114,8 +120,8 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        clawdata.num_output_times = 45
-        clawdata.tfinal = 60
+        clawdata.num_output_times = 1000
+        clawdata.tfinal = 60*1440
         clawdata.output_t0 = True  # output at initial (or restart) time?
 
     elif clawdata.output_style == 2:
@@ -266,7 +272,8 @@ def setrun(claw_pkg='geoclaw'):
     amrdata.refinement_ratios_x = [4,4]
     amrdata.refinement_ratios_y = [4,4]
     amrdata.refinement_ratios_t = [4,6]
-
+   # rundata.tol = -1
+   # rundata.tolsp = 0.001
 
     # Specify type of each aux variable in amrdata.auxtype.
     # This must be a list of length maux, each element of which is one of:
@@ -304,19 +311,25 @@ def setrun(claw_pkg='geoclaw'):
     amrdata.pprint = False      # proj. of tagged points
     amrdata.rprint = False      # print regridding summary
     amrdata.sprint = False      # space/memory output
-    amrdata.tprint = False      # time step reporting each level
+    amrdata.tprint = True      # time step reporting each level
     amrdata.uprint = False      # update/upbnd reporting
 
     # More AMR parameters can be set -- see the defaults in pyclaw/data.py
 
     # == setregions.data values ==
-    regions = rundata.regiondata.regions
+   # regions = rundata.regiondata.regions
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
+    rundata.regiondata.regions = []
 
     # == setgauges.data values ==
     # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
     # rundata.gaugedata.gauges.append([])
+    rundata.gaugedata.gauges.append([1,32990,12100,0.,2700])
+    rundata.gaugedata.gauges.append([2,32990,12200,0.,2700])
+    rundata.gaugedata.gauges.append([3,32990,12300,0.,2700])
+    rundata.gaugedata.gauges.append([4,32990,12400,0.,2700])
+    rundata.gaugedata.gauges.append([5,27121.7,13261.95,0.,2700])
 
     return rundata
     # end of function setrun
@@ -368,8 +381,9 @@ def setgeo(rundata):
     topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonDamFloodPlain.topo']);
     topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonDamLargeLowRes.topo'])
     topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonDamSmallHiRes.topo'])
+
     # == setdtopo.data values ==
-    dtopo_data = rundata.dtopo_data
+    topo_data = rundata.topo_data
     # for moving topography, append lines of the form :   (<= 1 allowed for now!)
     #   [topotype, minlevel,maxlevel,fname]
 
