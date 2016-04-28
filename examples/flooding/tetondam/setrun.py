@@ -72,8 +72,8 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # Number of grid cells: Coarsest grid
-    clawdata.num_cells[0] = 300
-    clawdata.num_cells[1] = 100
+    clawdata.num_cells[0] = 90
+    clawdata.num_cells[1] =  30
 
 
     # ---------------
@@ -381,7 +381,6 @@ def setgeo(rundata):
     topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamFloodPlain.topo']);
     topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLargeLowRes.topo'])
     topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamSmallHiRes.topo'])
-
     # == setdtopo.data values ==
     topo_data = rundata.topo_data
     # for moving topography, append lines of the form :   (<= 1 allowed for now!)
@@ -408,5 +407,7 @@ def setgeo(rundata):
 if __name__ == '__main__':
     # Set up run-time parameters and write all data files.
     import sys
+    import pdb
+    pdb.set_trace()
     rundata = setrun(*sys.argv[1:])
     rundata.write()

@@ -26,7 +26,7 @@ import os
 import numpy
 import clawpack.clawutil.data
 
-# Radius of earth in meters.  
+# Radius of earth in meters.
 # For consistency, should always use this value when needed, e.g.
 # in setrun.py or topotools:
 Rearth = 6367.5e3  # average of polar and equatorial radii
@@ -89,7 +89,7 @@ class GeoClawData(clawpack.clawutil.data.ClawData):
         self.data_write()
 
         self.data_write('dry_tolerance')
- 
+
         self.close_data_file()
 
 
@@ -133,13 +133,13 @@ class TopographyData(clawpack.clawutil.data.ClawData):
         # Topography data
         self.add_attribute('test_topography',0)
         self.add_attribute('topofiles',[])
-        
+
         # Jump discontinuity
         self.add_attribute('topo_location',-50e3)
         self.add_attribute('topo_left',-4000.0)
         self.add_attribute('topo_right',-200.0)
         self.add_attribute('topo_angle',0.0)
-        
+
         # Simple oceanic shelf
         self.add_attribute('x0',350e3)
         self.add_attribute('x1',450e3)
@@ -149,7 +149,7 @@ class TopographyData(clawpack.clawutil.data.ClawData):
         self.add_attribute('beach_slope',0.008)
 
 
-    def write(self,data_source='setrun.py'): 
+    def write(self,data_source='setrun.py'):
 
         self.open_data_file('topo.data',data_source)
         self.data_write(name='test_topography',description='(Type topography specification)')
@@ -164,7 +164,7 @@ class TopographyData(clawpack.clawutil.data.ClawData):
             self.data_write(name='topo_location',description='(Bathymetry jump location)')
             self.data_write(name='topo_left',description='(Depth to left of bathy_location)')
             self.data_write(name='topo_right',description='(Depth to right of bathy_location)')
-        elif self.test_topography == 2 or self.test_topography == 3: 
+        elif self.test_topography == 2 or self.test_topography == 3:
             self.data_write(name='x0',description='(Location of basin end)')
             self.data_write(name='x1',description='(Location of shelf slope end)')
             self.data_write(name='x2',description='(Location of beach slope)')
@@ -184,7 +184,7 @@ class FixedGridData(clawpack.clawutil.data.ClawData):
     def __init__(self):
 
         super(FixedGridData,self).__init__()
-        
+
         # Fixed Grids
         self.add_attribute('fixedgrids',[])
 
@@ -204,7 +204,7 @@ class FGmaxData(clawpack.clawutil.data.ClawData):
     def __init__(self):
 
         super(FGmaxData,self).__init__()
-        
+
         # File name for fgmax points and parameters:
         self.add_attribute('fgmax_files',[])
         self.add_attribute('num_fgmax_val',1)
@@ -232,7 +232,7 @@ class DTopoData(clawpack.clawutil.data.ClawData):
     def __init__(self):
 
         super(DTopoData,self).__init__()
-        
+
         # Moving topograhpy
         self.add_attribute('dtopofiles',[])
         self.add_attribute('dt_max_dtopo', 1.e99)
@@ -261,7 +261,7 @@ class DTopoData(clawpack.clawutil.data.ClawData):
         with open(os.path.abspath(path), 'r') as data_file:
 
             file_name = None
-            
+
             # Forward to first parameter
             for line in data_file:
 
@@ -298,10 +298,10 @@ class QinitData(clawpack.clawutil.data.ClawData):
     def __init__(self):
 
         super(QinitData,self).__init__()
-        
+
         # Qinit data
         self.add_attribute('qinit_type',0)
-        self.add_attribute('qinitfiles',[])   
+        self.add_attribute('qinitfiles',[])
 
     def write(self,data_source='setrun.py'):
         # Initial perturbation
@@ -337,7 +337,7 @@ class SurgeData(clawpack.clawutil.data.ClawData):
         self.add_attribute('wind_forcing',False)
         self.add_attribute('drag_law',1)
         self.add_attribute('pressure_forcing',False)
-        
+
         # Source term algorithm parameters
         # self.add_attribute('wind_tolerance',1e-6)
         # self.add_attribute('pressure_tolerance',1e-4) # Pressure source term tolerance
@@ -345,7 +345,7 @@ class SurgeData(clawpack.clawutil.data.ClawData):
         # AMR parameters
         self.add_attribute('wind_refine',[20.0,40.0,60.0])
         self.add_attribute('R_refine',[60.0e3,40e3,20e3])
-        
+
         # Storm parameters
         self.add_attribute("storm_type",0) # Type of storm
         self.add_attribute("landfall",0.0)
@@ -359,7 +359,7 @@ class SurgeData(clawpack.clawutil.data.ClawData):
         self.add_attribute('R_eye_init',(0.0,0.0))     # Initial position
         self.add_attribute('A',23.0)        # Hurricane model fit parameter
         self.add_attribute('B',1.5)
-        self.add_attribute('Pc',950.0)      # Pressure in the eye of the hurricane 
+        self.add_attribute('Pc',950.0)      # Pressure in the eye of the hurricane
 
         # Storm type 3 - Stommel wind field
         self.add_attribute('stommel_wind',1.0)
@@ -368,7 +368,7 @@ class SurgeData(clawpack.clawutil.data.ClawData):
         self.add_attribute("wind_index", 5)
         self.add_attribute("pressure_index", 7)
 
-        
+
     def write(self,out_file='./surge.data',data_source="setrun.py"):
         """Write out the data file to the path given"""
 
@@ -378,7 +378,7 @@ class SurgeData(clawpack.clawutil.data.ClawData):
         self.data_write('rho_air',description="(Density of air)")
         self.data_write('ambient_pressure',description="(Nominal atmospheric pressure)")
         self.data_write()
-        
+
         self.data_write('wind_forcing',description='(Wind source term used)')
         self.data_write('drag_law',description='(Type of drag law to use)')
         self.data_write('pressure_forcing',description="(Pressure source term used)")
@@ -403,15 +403,15 @@ class SurgeData(clawpack.clawutil.data.ClawData):
         else:
             self.data_write('R_refine',description='(Refinement ratios)')
         self.data_write()
-        
+
         self.data_write("storm_type",description='(Storm specification type)')
         self.data_write('landfall',description="(Landfall time of storm)")
         self.data_write('storm_file',description="(Location of storm data)")
 
         if self.storm_type == 0 or self.storm_type == 1:
-            pass 
+            pass
         elif self.storm_type == 2:
-            # Open another data file called stored in storm_file and write the 
+            # Open another data file called stored in storm_file and write the
             # following parameters to it
             self.open_data_file(self.storm_file)
             self.data_write("ramp_up_t",description="(Ramp up time for wind field)")
@@ -421,7 +421,7 @@ class SurgeData(clawpack.clawutil.data.ClawData):
             self.data_write('B')
             self.data_write('Pc',description="(Pressure in the eye of the hurricane)")
         elif self.storm_type == 3:
-            # Open another data file called stored in storm_file and write the 
+            # Open another data file called stored in storm_file and write the
             # following parameters to it
             self.open_data_file(self.storm_file)
             self.data_write("stommel_wind",description="(Amplitude of Stommel wind)")
@@ -437,7 +437,7 @@ class FrictionData(clawpack.clawutil.data.ClawData):
 
     def __init__(self):
         r""""""
-        
+
         super(FrictionData, self).__init__()
 
         # Variable friction support
