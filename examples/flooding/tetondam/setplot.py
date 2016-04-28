@@ -9,7 +9,7 @@ function setplot is called to set the plot parameters.
 """
 Set up the plot figures, axes, andd items to be done for each frame.
 
-this module is imported by the plotting routines and then the 
+this module is imported by the plotting routines and then the
 fucntion setplot is called to set the plot parameters.
 
 """
@@ -41,7 +41,7 @@ def setplot(plotdata):
     plotdata.clearfigures()  # clear any old figures,axes,items data
 
 
-    #to plot gauge locations on pcolor or contour, use this as 
+    #to plot gauge locations on pcolor or contour, use this as
     #after axis function:
 
 
@@ -59,7 +59,7 @@ def setplot(plotdata):
     """
     specify what is to be plotted at each frame
     Input: plotdata, an instance of pyclaw.plotters.data.ClawPlotData.
-    Outptu: a modified version of plotdata. 
+    Outptu: a modified version of plotdata.
 
     """
 
@@ -136,7 +136,7 @@ def setplot(plotdata):
                                         gaugenos='5', format_string='ko', add_labels=True)
 
     plotaxes.afteraxes = addgauges
-    
+
     #next plot, close up
 
     #-----------------------------------------
@@ -198,7 +198,7 @@ def setplot(plotdata):
     plotaxes.afteraxes = addgauges
 
 
-    
+
     #-----------------------------------------
     # Figures for gauges
     #-----------------------------------------
@@ -256,6 +256,7 @@ def setplot(plotdata):
     # Parameters used only when creating html and/or latex hardcopy
     # e.g., via pyclaw.plotters.frametools.printframes:
 
+    # plotdata.parallel = True
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
     plotdata.print_framenos = 'all'          # list of frames to print
@@ -268,4 +269,5 @@ def setplot(plotdata):
     plotdata.latex_framesperline = 1         # layout of plots
     plotdata.latex_makepdf = False           # also run pdflatex?
     plotdata.kml = True
+
     return plotdata

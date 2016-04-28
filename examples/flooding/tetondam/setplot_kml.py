@@ -36,6 +36,7 @@ def setplot(plotdata):
 
     plotdata.verbose = False
 
+
     # To plot gauge locations on pcolor or contour plot, use this as
     # an afteraxis function:
 
@@ -59,7 +60,7 @@ def setplot(plotdata):
 
     # Colormap range
     cmin = 0
-    cmax = 115
+    cmax = 80
     cmap = geoplot.googleearth_transparent
 
     dark_blue   = [0.2, 0.2, 0.7, 1.0];
@@ -68,6 +69,12 @@ def setplot(plotdata):
     flooding_colormap = colormaps.make_colormap({-1:transparent,
                                                  0.0:light_blue,
                                                  1.0:dark_blue})
+
+    dark_blue = [0.2,0.2,0.7];
+    light_blue = [0.7,0.7,1.0];
+    flooding_colormap = colormaps.make_colormap({ -1.0:light_blue,
+                                                 1.0:dark_blue})
+
     cmap = flooding_colormap
 
     #-----------------------------------------------------------
@@ -96,11 +103,12 @@ def setplot(plotdata):
     plotaxes = plotfigure.new_plotaxes('kml')
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = geoplot.surface_or_depth
+    plotitem.plot_var = geoplot.surface
     plotaxes.xlimits = [0,24990]
     plotaxes.ylimits = [0,5370]
-    plotitem.pcolor_cmap = cmap
-    plotitem.pcolor_cmin = cmin
-    plotitem.pcolor_cmax = cmax
+    plotitem.pcolor_cmap = flooding_colormap
+    plotitem.pcolor_cmin = 0
+    plotitem.pcolor_cmax = 80
 
     def kml_colorbar(filename):
         geoplot.kml_build_colorbar(filename,cmap,cmin,cmax)
@@ -135,6 +143,7 @@ def setplot(plotdata):
     plotaxes = plotfigure.new_plotaxes('kml')
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = geoplot.surface_or_depth
+    plotitem.plot_var = geoplot.surface
     plotitem.pcolor_cmap = cmap
     plotitem.pcolor_cmin = cmin
     plotitem.pcolor_cmax = cmax
@@ -202,11 +211,12 @@ def setplot(plotdata):
     # Parameters used only when creating html and/or latex hardcopy
     # e.g., via pyclaw.plotters.frametools.printframes:
 
+    plotdata.parallel = True
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
-    plotdata.print_framenos = range(0,10)         # list of frames to print
-    plotdata.print_gaugenos = []          # list of gauges to print
-    plotdata.print_fignos = [1]           # list of figures to print
+    plotdata.print_framenos = range(0,4)         # list of frames to print
+    plotdata.print_gaugenos = 'all'          # list of gauges to print
+    plotdata.print_fignos = [1,2]           # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.html_movie = None                     # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
