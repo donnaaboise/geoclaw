@@ -7,15 +7,10 @@ function setplot is called to set the plot parameters.
 
 """
 
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
-
 from clawpack.geoclaw import topotools
-
-try:
-    TG32412 = np.loadtxt('32412_notide.txt')
-except:
-    print "*** Could not load DART data file"
 
 #--------------------------
 def setplot(plotdata):
@@ -37,45 +32,35 @@ def setplot(plotdata):
     plotdata.verbose = False
 
 
-    # To plot gauge locations on pcolor or contour plot, use this as
-    # an afteraxis function:
-
-    def addgauges(current_data):
-        from clawpack.visclaw import gaugetools
-        gaugetools.plot_gauge_locations(current_data.plotdata, \
-             gaugenos='all', format_string='ko', add_labels=True)
-
-
     #-----------------------------------------
     # Some global kml flags
     #-----------------------------------------
     plotdata.kml_name = "Teton Dam"
-    plotdata.kml_starttime = [1976,2,27,6,34,0]  # Time of event in UTC [None]
-    # plotdata.kml_tz_offset = 3    # Time zone offset (in hours) of event. [None]
+    plotdata.kml_starttime = [1976,6,5,17,55,0]  # Time of event in UTC [None]
+    plotdata.kml_tz_offset = 6    # Time zone offset (in hours) of event. [None]
 
     plotdata.kml_index_fname = "TetonDam"  # name for .kmz and .kml files ["_GoogleEarth"]
 
     # Set to a URL where KMZ file will be published.
-    # plotdata.kml_publish = None
+    # plotdata.kml_publish = 'http://math.boisestate.edu/~calhoun/visclaw/GoogleEarth/kmz'
 
-    # Colormap range
-    cmin = 0
-    cmax = 80
-    cmap = geoplot.googleearth_transparent
 
-    dark_blue   = [0.2, 0.2, 0.7, 1.0];
-    light_blue  = [0.7, 0.7, 1.0, 1.0];
-    transparent = [0.7, 0.7, 1.0, 0.0]
-    flooding_colormap = colormaps.make_colormap({-1:transparent,
-                                                 0.0:light_blue,
-                                                 1.0:dark_blue})
+    # This maps topo coordinates [0,48000]x[0,17540] to lat/long coordinates.
+    def map_topo_to_latlong(xc,yc):
+        # map plot_xlim --> ge_xlim
+        # map plot_ylim --> ge_ylim
+        ge_xlim = np.array([-111.96132553, -111.36256443]);
+        ge_ylim = np.array([43.79453362, 43.95123268]);
+        topo_xlim = np.array([0,48000]);
+        topo_ylim = np.array([0,17500]);
+        slope_x = np.diff(ge_xlim)/np.diff(topo_xlim);
+        slope_y = np.diff(ge_ylim)/np.diff(topo_ylim);
+        xp = slope_x*(xc-topo_xlim[0]) + ge_xlim[0];
+        yp = slope_y*(yc-topo_ylim[0]) + ge_ylim[0];
 
-    dark_blue = [0.2,0.2,0.7];
-    light_blue = [0.7,0.7,1.0];
-    flooding_colormap = colormaps.make_colormap({ -1.0:light_blue,
-                                                 1.0:dark_blue})
+        return xp[0],yp[0]
 
-    cmap = flooding_colormap
+    plotdata.kml_map_topo_to_latlong =  map_topo_to_latlong
 
     #-----------------------------------------------------------
     # Figure for KML files
@@ -87,64 +72,49 @@ def setplot(plotdata):
     plotfigure.kml_use_for_initial_view = True
 
     # These override any axes limits set below in plotaxes
-    plotfigure.kml_xlimits = [-111.684952, -111.373222]
-    plotfigure.kml_ylimits = [43.889109, 43.937331];
+    plotfigure.kml_xlimits = [-111.96132553, -111.36256443]  #
+    plotfigure.kml_ylimits = [43.79453362, 43.95123268]
+
+    # Use plotaxes.<x,y>imits to create PNG file (not
+    # the kml_<x,y>limits above.
+    plotfigure.kml_use_figure_limits = False
 
     # Resolution (should be consistent with data)
-    # Refinement levels : [2,6]; max level = 3; num_cells = [30,30]
-    # rcl : resolution of the coarsest level in this figure
-    rcl = 4    # rcl*figsize = num_cells
-    plotfigure.kml_figsize = [24.979,5.364]
-    plotfigure.kml_dpi = 10         # Resolve all three levels
+    # Refinement levels : [4,4]; max level = 3; num_cells = [90,32]
+    # Aim for 1 pixel for finest level grid cell.  Trying to increase the
+    # resolution beyond this can lead to weird aliasing effects (which
+    # only seem to affect the vertical resolution - possible bug in Matplotlib?)
+
+    # If amr refinement ratios set to [4,4]; max_level = 3
+    # figsize*dpi = [144,51.2]*10 = [90,32]*4*4 = [1440,512]
+    plotfigure.kml_figsize = [144.0, 51.2]
+    plotfigure.kml_dpi = 10
+
+    # If amr refinement ratios set to [4,4]; max_level = 2
+    # figsize*dpi = [36,12.8]*10 = [90,32]*4 = [360,128]
+    plotfigure.kml_figsize = [36.0, 12.8]
+    plotfigure.kml_dpi = 10
+
     plotfigure.kml_tile_images = False    # Tile images for faster loading.  Requires GDAL [False]
 
+    dark_blue = [0.2,0.2,0.7];
+    light_blue = [0.7,0.7,1.0];
 
+    # Transparency cut-off
+    cmin = 0
+    cmax = 15
+    tc = -1 + 2.0/(cmax-cmin)*2.0   # start transparency at about 3 meters.
+    flooding_colormap = colormaps.make_colormap({ -1:geoplot.transparent,
+                                                  tc:light_blue,
+                                                  1.0:dark_blue})
+    cmap = flooding_colormap
     # Water
     plotaxes = plotfigure.new_plotaxes('kml')
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-    plotitem.plot_var = geoplot.surface_or_depth
-    plotitem.plot_var = geoplot.surface
-    plotaxes.xlimits = [0,24990]
-    plotaxes.ylimits = [0,5370]
+    plotitem.plot_var = geoplot.depth
     plotitem.pcolor_cmap = flooding_colormap
-    plotitem.pcolor_cmin = 0
-    plotitem.pcolor_cmax = 80
-
-    def kml_colorbar(filename):
-        geoplot.kml_build_colorbar(filename,cmap,cmin,cmax)
-
-    plotfigure.kml_colorbar = kml_colorbar
-
-    #-----------------------------------------------------------
-    # Figure for KML files (zoom)
-    #----------------------------------------------------------
-    plotfigure = plotdata.new_plotfigure(name='Power Plant (zoom)',figno=2)
-    plotfigure.show = True
-
-    plotfigure.use_for_kml = True
-    plotfigure.kml_use_for_initial_view = False  # Use large plot for view
-
-    # Set Google Earth bounding box and figure size
-    ay = 43.913661
-    by = 43.916382
-
-    ax = -111.623926
-    bx = -111.620150
-
-    plotfigure.kml_xlimits = [ax,bx]
-    plotfigure.kml_ylimits = [ay,by]
-    plotfigure.kml_figsize = [30,30]  # inches.
-
-    # Resolution
-    plotfigure.kml_dpi = 20       # Resolve all three levels
-    plotfigure.kml_tile_images = False  # Tile images for faster loading.
-
-
-    plotaxes = plotfigure.new_plotaxes('kml')
-    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-    plotitem.plot_var = geoplot.surface_or_depth
-    plotitem.plot_var = geoplot.surface
-    plotitem.pcolor_cmap = cmap
+    plotaxes.xlimits = [0,48000]   # Computationally coordinates used for creating PNG file
+    plotaxes.ylimits = [0,17500]
     plotitem.pcolor_cmin = cmin
     plotitem.pcolor_cmax = cmax
 
@@ -153,23 +123,21 @@ def setplot(plotdata):
 
     plotfigure.kml_colorbar = kml_colorbar
 
-
     #-----------------------------------------
     # Figures for gauges
     #-----------------------------------------
-    plotfigure = plotdata.new_plotfigure(name='Surface at gauges', figno=300, \
+    plotfigure = plotdata.new_plotfigure(name='Flood height', figno=300, \
                     type='each_gauge')
-    plotfigure.clf_each_gauge = False
+    plotfigure.clf_each_gauge = True
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.xlimits = 'auto'
     plotaxes.ylimits = 'auto'
-    # plotaxes.title = 'Surface'
 
     # Plot surface as blue curve:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
-    plotitem.plot_var = 3
+    plotitem.plot_var = 3  # eta?
     plotitem.plotstyle = 'b-'
 
     # Plot topo as green curve:
@@ -186,24 +154,21 @@ def setplot(plotdata):
     plotitem.plot_var = gaugetopo
     plotitem.plotstyle = 'g-'
 
-    def add_zeroline(current_data):
-        from pylab import plot, legend, xticks, floor, axis, xlabel
+    def afterframe(current_data):
+        from pylab import plot, legend, xticks, floor, axis, xlabel,title
         t = current_data.t
         gaugeno = current_data.gaugeno
+        if gaugeno == 1:
+            title('Wilford')
+        elif gaugeno == 2:
+            title('Teton City')
 
-        if gaugeno == 32412:
-            try:
-                plot(TG32412[:,0], TG32412[:,1], 'r')
-                legend(['GeoClaw','Obs'],loc='lower right')
-            except: pass
-            axis((0,t.max(),-0.3,0.3))
-
-        plot(t, 0*t, 'k')
+        # plot(t, 0*t, 'k')
         n = int(floor(t.max()/3600.) + 2)
         xticks([3600*i for i in range(n)], ['%i' % i for i in range(n)])
         xlabel('time (hours)')
 
-    plotaxes.afteraxes = add_zeroline
+    plotaxes.afteraxes = afterframe
 
 
     #-----------------------------------------
@@ -214,11 +179,11 @@ def setplot(plotdata):
     plotdata.parallel = True
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
-    plotdata.print_framenos = range(0,4)         # list of frames to print
+    plotdata.print_framenos = 'all'         # list of frames to print
     plotdata.print_gaugenos = 'all'          # list of gauges to print
-    plotdata.print_fignos = [1,2]           # list of figures to print
+    plotdata.print_fignos = [1,300]           # list of figures to print
     plotdata.html = True                     # create html files of plots?
-    plotdata.html_movie = None                     # create html files of plots?
+    plotdata.html_movie = False                     # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
     plotdata.latex = False                    # create latex file of plots?
     plotdata.latex_figsperline = 2           # layout of plots

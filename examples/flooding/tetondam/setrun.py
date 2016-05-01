@@ -73,7 +73,7 @@ def setrun(claw_pkg='geoclaw'):
 
     # Number of grid cells: Coarsest grid
     clawdata.num_cells[0] = 90
-    clawdata.num_cells[1] =  30
+    clawdata.num_cells[1] =  32
 
 
     # ---------------
@@ -120,8 +120,9 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        clawdata.num_output_times = 50
-        clawdata.tfinal = 60*1440/20.0
+        n_hours = 8
+        clawdata.num_output_times = 10*n_hours  # Plot every 6 minutes
+        clawdata.tfinal = 60*60*n_hours
         clawdata.output_t0 = True  # output at initial (or restart) time?
 
     elif clawdata.output_style == 2:
@@ -150,7 +151,7 @@ def setrun(claw_pkg='geoclaw'):
     # The current t, dt, and cfl will be printed every time step
     # at AMR levels <= verbosity.  Set verbosity = 0 for no printing.
     #   (E.g. verbosity == 2 means print only on levels 1 and 2.)
-    clawdata.verbosity = 3
+    clawdata.verbosity = 1
 
 
 
@@ -266,12 +267,12 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 2
+    amrdata.amr_levels_max = 2    # Set to 3 for best results
 
     # List of refinement ratios at each level (length at least mxnest-1)
     amrdata.refinement_ratios_x = [4,4]
     amrdata.refinement_ratios_y = [4,4]
-    amrdata.refinement_ratios_t = [4,6]
+    amrdata.refinement_ratios_t = [4,4]
    # rundata.tol = -1
    # rundata.tolsp = 0.001
 
@@ -322,14 +323,30 @@ def setrun(claw_pkg='geoclaw'):
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
     rundata.regiondata.regions = []
 
+
+    # Inverse of map_topo_to_latlong, defined in setplot_kml.py
+    def map_latlong_to_topo(xp,yp):
+        # map plot_xlim --> ge_xlim
+        # map plot_ylim --> ge_ylim
+        ge_xlim = np.array([-111.96132553, -111.36256443]);
+        ge_ylim = np.array([43.79453362, 43.95123268]);
+        topo_xlim = np.array([0,48000]);
+        topo_ylim = np.array([0,17500]);
+        slope_x = np.diff(ge_xlim)/np.diff(topo_xlim);
+        slope_y = np.diff(ge_ylim)/np.diff(topo_ylim);
+        xc = 1./slope_x*(xp-ge_xlim[0]) + topo_xlim[0];
+        yc = 1./slope_y*(yp-ge_ylim[0]) + topo_ylim[0];
+
+        return xc[0],yc[0]
+
     # == setgauges.data values ==
     # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
-    # rundata.gaugedata.gauges.append([])
-    rundata.gaugedata.gauges.append([1,32990,12100,0.,2700])
-    rundata.gaugedata.gauges.append([2,32990,12200,0.,2700])
-    rundata.gaugedata.gauges.append([3,32990,12300,0.,2700])
-    rundata.gaugedata.gauges.append([4,32990,12400,0.,2700])
-    rundata.gaugedata.gauges.append([5,27121.7,13261.95,0.,2700])
+
+    xc,yc = map_latlong_to_topo(-111.672222,43.914444)
+    rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Wilford
+
+    xc,yc = map_latlong_to_topo(-111.669167,43.887778)
+    rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Teton City
 
     return rundata
     # end of function setrun
@@ -377,7 +394,6 @@ def setgeo(rundata):
     topo_data = rundata.topo_data
     # for topography, append lines of the form
     #    [topotype, minlevel, maxlevel, t1, t2, fname]
-    # topo_data.topofiles.append([2, 1, 10, 0., 1.e10, 'bowl.topotype2'])
     topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamFloodPlain.topo']);
     topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLargeLowRes.topo'])
     topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamSmallHiRes.topo'])
@@ -407,7 +423,5 @@ def setgeo(rundata):
 if __name__ == '__main__':
     # Set up run-time parameters and write all data files.
     import sys
-    import pdb
-    pdb.set_trace()
     rundata = setrun(*sys.argv[1:])
     rundata.write()
