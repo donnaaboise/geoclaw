@@ -48,18 +48,16 @@ def setplot(plotdata):
     # This maps topo coordinates [0,48000]x[0,17540] to lat/long coordinates
     # needed for Google Earth.
     def map_topo_to_latlong(xc,yc):
-        # map plot_xlim --> ge_xlim
-        # map plot_ylim --> ge_ylim
-        ge_xlim = np.array([-111.96132553, -111.36256443]);
-        ge_ylim = np.array([43.79453362, 43.95123268]);
-        topo_xlim = np.array([0,48000]);
-        topo_ylim = np.array([0,17500]);
-        slope_x = np.diff(ge_xlim)/np.diff(topo_xlim);
-        slope_y = np.diff(ge_ylim)/np.diff(topo_ylim);
+        ge_xlim = [-111.96132553, -111.36256443]
+        ge_ylim = [43.79453362, 43.95123268]
+        topo_xlim = [0,48000]
+        topo_ylim = [0,17400]
+        slope_x = (ge_xlim[1]-ge_xlim[0])/(topo_xlim[1]-topo_xlim[0])
+        slope_y = (ge_ylim[1]-ge_ylim[0])/(topo_ylim[1]-topo_ylim[0])
         xp = slope_x*(xc-topo_xlim[0]) + ge_xlim[0];
         yp = slope_y*(yc-topo_ylim[0]) + ge_ylim[0];
 
-        return xp[0],yp[0]
+        return xp,yp
 
     plotdata.kml_map_topo_to_latlong =  map_topo_to_latlong
 
@@ -86,22 +84,23 @@ def setplot(plotdata):
     # resolution beyond this can lead to weird aliasing effects (which
     # only seem to affect the vertical resolution - possible bug in Matplotlib?)
 
-    # If amr refinement ratios set to [4,4]; max_level = 3
-    # figsize*dpi = [144,51.2]*10 = [90,32]*4*4 = [1440,512]
-    # plotfigure.kml_figsize = [144.0, 51.2]
-    # plotfigure.kml_dpi = 10
-
     # If amr refinement ratios set to [4,4]; max_level = 2
     # figsize*dpi = [36,12.8]*10 = [90,32]*4 = [360,128]
     plotfigure.kml_figsize = [36.0, 12.8]
-    plotfigure.kml_dpi = 10
+    plotfigure.kml_dpi = 2*10
+
+    # If amr refinement ratios set to [4,4]; max_level = 3
+    # figsize*dpi = [144,51.2]*10 = [90,32]*4*4 = [1440,512]
+    plotfigure.kml_figsize = [144.0, 51.2]
+    plotfigure.kml_dpi = 20
+
     # --------------------------------------------------
 
     plotfigure.kml_tile_images = False    # Tile images for faster loading.  Requires GDAL [False]
 
     # Color axis : transparency below 0.1*(cmax-cmin)
     cmin = 0
-    cmax = 15
+    cmax = 5
     cmap = geoplot.googleearth_flooding  # transparent --> light blue --> dark blue
 
     # Water
@@ -110,7 +109,7 @@ def setplot(plotdata):
     plotitem.plot_var = geoplot.depth   # Plot height field h.
     plotitem.pcolor_cmap = geoplot.googleearth_flooding
     plotaxes.xlimits = [0,48000]   # Computational coordinates used for creating PNG file
-    plotaxes.ylimits = [0,17500]
+    plotaxes.ylimits = [0,17400]
     plotitem.pcolor_cmin = cmin
     plotitem.pcolor_cmax = cmax
 

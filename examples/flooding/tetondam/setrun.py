@@ -121,7 +121,7 @@ def setrun(claw_pkg='geoclaw'):
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
         n_hours = 8
-        clawdata.num_output_times = 10*n_hours  # Plot every 6 minutes
+        clawdata.num_output_times = 20*n_hours  # Plot every 5 minutes
         clawdata.tfinal = 60*60*n_hours
         clawdata.output_t0 = True  # output at initial (or restart) time?
 
@@ -267,7 +267,7 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 2    # Set to 3 for best results
+    amrdata.amr_levels_max = 3    # Set to 3 for best results
 
     # List of refinement ratios at each level (length at least mxnest-1)
     amrdata.refinement_ratios_x = [4,4]
@@ -328,14 +328,14 @@ def setrun(claw_pkg='geoclaw'):
     def map_latlong_to_topo(xp,yp):
         # map plot_xlim --> ge_xlim
         # map plot_ylim --> ge_ylim
-        ge_xlim = np.array([-111.96132553, -111.36256443]);
-        ge_ylim = np.array([43.79453362, 43.95123268]);
-        topo_xlim = np.array([0,48000]);
-        topo_ylim = np.array([0,17500]);
-        slope_x = np.diff(ge_xlim)/np.diff(topo_xlim);
-        slope_y = np.diff(ge_ylim)/np.diff(topo_ylim);
-        xc = 1./slope_x*(xp-ge_xlim[0]) + topo_xlim[0];
-        yc = 1./slope_y*(yp-ge_ylim[0]) + topo_ylim[0];
+        ge_xlim = np.array([-111.96132553, -111.36256443])
+        ge_ylim = np.array([43.79453362, 43.95123268])
+        topo_xlim = np.array([0,48000])
+        topo_ylim = np.array([0,17400])
+        slope_x = np.diff(ge_xlim)/np.diff(topo_xlim)
+        slope_y = np.diff(ge_ylim)/np.diff(topo_ylim)
+        xc = 1./slope_x*(xp-ge_xlim[0]) + topo_xlim[0]
+        yc = 1./slope_y*(yp-ge_ylim[0]) + topo_ylim[0]
 
         return xc[0],yc[0]
 
