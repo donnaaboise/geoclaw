@@ -122,8 +122,8 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        n_hours = 2
-        clawdata.num_output_times = int(30*n_hours)  # Plot every 5 minutes
+        n_hours = 24
+        clawdata.num_output_times = int(12*n_hours)  # Plot every 5 minutes
         clawdata.tfinal = 60*60*n_hours
         clawdata.output_t0 = True  # output at initial (or restart) time?
 
@@ -269,12 +269,12 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 4    # Set to 3 for best results
+    amrdata.amr_levels_max = 3    # Set to 3 for best results
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [4,4,4]
-    amrdata.refinement_ratios_y = [4,4,4]
-    amrdata.refinement_ratios_t = [4,4,4]
+    amrdata.refinement_ratios_x = [2,4,4,4]
+    amrdata.refinement_ratios_y = [2,4,4,4]
+    amrdata.refinement_ratios_t = [2,4,4,4]
    # rundata.tol = -1
    # rundata.tolsp = 0.001
 
