@@ -63,18 +63,22 @@ def setrun(claw_pkg='geoclaw'):
 
     # Lower and upper edge of computational domain:
 #    dx = 0.000374360513991
-    clawdata.lower[0] = 0
-    clawdata.upper[0] = 48000
+    clawdata.lower[0] = -112.3895
+    # clawdata.lower[0] = -111.6
+    clawdata.upper[0] = -111.2400
 
-    clawdata.lower[1] = 0
-    clawdata.upper[1] = 17400
+    clawdata.lower[1] = 43.5818
+    # clawdata.lower[1] = 43.85
+    clawdata.upper[1] = 43.9881
 
+    # Domain size : 103526 x 45194 (meters).
+    # Preserve aspect ratio : 103526/45194 approx. 2.2907
+    # 55/24 = 2.2917
+    clawdata.num_cells[0] = 55
+    clawdata.num_cells[1] =  24
 
-
-    # Number of grid cells: Coarsest grid
-    clawdata.num_cells[0] = 90
-    clawdata.num_cells[1] =  32
-
+    print "dx = %12.4g" % ((clawdata.upper[0] - clawdata.lower[0])/clawdata.num_cells[0])
+    print "dy = %12.4g" % ((clawdata.upper[1] - clawdata.lower[1])/clawdata.num_cells[1])
 
     # ---------------
     # Size of system:
@@ -84,12 +88,10 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.num_eqn = 3
 
     # Number of auxiliary variables in the aux array (initialized in setaux)
-    clawdata.num_aux = 1
+    clawdata.num_aux = 3
 
     # Index of aux array corresponding to capacity function, if there is one:
-    clawdata.capa_index = 0
-
-
+    clawdata.capa_index = 2
 
     # -------------
     # Initial time:
@@ -120,8 +122,8 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        n_hours = 8
-        clawdata.num_output_times = 20*n_hours  # Plot every 5 minutes
+        n_hours = 2
+        clawdata.num_output_times = int(30*n_hours)  # Plot every 5 minutes
         clawdata.tfinal = 60*60*n_hours
         clawdata.output_t0 = True  # output at initial (or restart) time?
 
@@ -267,12 +269,12 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 3    # Set to 3 for best results
+    amrdata.amr_levels_max = 4    # Set to 3 for best results
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [4,4]
-    amrdata.refinement_ratios_y = [4,4]
-    amrdata.refinement_ratios_t = [4,4]
+    amrdata.refinement_ratios_x = [4,4,4]
+    amrdata.refinement_ratios_y = [4,4,4]
+    amrdata.refinement_ratios_t = [4,4,4]
    # rundata.tol = -1
    # rundata.tolsp = 0.001
 
@@ -280,7 +282,8 @@ def setrun(claw_pkg='geoclaw'):
     # This must be a list of length maux, each element of which is one of:
     #   'center',  'capacity', 'xleft', or 'yleft'  (see documentation).
 
-    amrdata.aux_type = ['center']
+    amrdata.aux_type = ['center','capacity','yleft']
+
 
 
     # Flag using refinement routine flag2refine rather than richardson error
@@ -318,10 +321,10 @@ def setrun(claw_pkg='geoclaw'):
     # More AMR parameters can be set -- see the defaults in pyclaw/data.py
 
     # == setregions.data values ==
-   # regions = rundata.regiondata.regions
+    regions = rundata.regiondata.regions
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-    rundata.regiondata.regions = []
+    regions.append([5,5, 0, 1.e10,-111.7,-111.24,43.83, 43.9881])
 
 
     # Inverse of map_topo_to_latlong, defined in setplot_kml.py
@@ -342,10 +345,14 @@ def setrun(claw_pkg='geoclaw'):
     # == setgauges.data values ==
     # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
 
-    xc,yc = map_latlong_to_topo(-111.672222,43.914444)
+    # Wilford
+    # xc,yc = map_latlong_to_topo(-111.672222,43.914444)
+    xc,yc = [-111.672222,43.914444]
     rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Wilford
 
-    xc,yc = map_latlong_to_topo(-111.669167,43.887778)
+    # Teton City
+    # xc,yc = map_latlong_to_topo(-111.669167,43.887778)
+    xc,yc = [-111.669167,43.887778]
     rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Teton City
 
     return rundata
@@ -370,7 +377,7 @@ def setgeo(rundata):
 
     # == Physics ==
     geo_data.gravity = 9.81
-    geo_data.coordinate_system = 1
+    geo_data.coordinate_system = 2   # LatLong coordinates
     geo_data.earth_radius = 6367.5e3
 
     # == Forcing Options
@@ -388,15 +395,19 @@ def setgeo(rundata):
     refinement_data.wave_tolerance = 1.e-2
     refinement_data.deep_depth = 1e2
     refinement_data.max_level_deep = 3
-    refinement_data.variable_dt_refinement_ratios = True
+    refinement_data.variable_dt_refinement_ratios = False
 
     # == settopo.data values ==
     topo_data = rundata.topo_data
     # for topography, append lines of the form
     #    [topotype, minlevel, maxlevel, t1, t2, fname]
-    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamFloodPlain.topo']);
-    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLargeLowRes.topo'])
-    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamSmallHiRes.topo'])
+    # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamFloodPlain.topo']);
+    # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLargeLowRes.topo'])
+    # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamSmallHiRes.topo'])
+
+    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLatLong.topo'])
+
+
     # == setdtopo.data values ==
     topo_data = rundata.topo_data
     # for moving topography, append lines of the form :   (<= 1 allowed for now!)
