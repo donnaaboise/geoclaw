@@ -18,8 +18,10 @@ SUBROUTINE qinit(meqn,mbc,mx,my,xlower,ylower,dx,dy,q,maux,aux)
     REAL(kind=8), PARAMETER :: xll = -112.3895d0
     REAL(kind=8), PARAMETER :: x0 = -111.5391666666667d0  !! x-coords of Teton Dam
     REAL(kind=8), PARAMETER :: x1 = -111.24d0  !! Left edge of domain
-    REAL(kind=8), PARAMETER :: h0 = 1540.d0
-    REAL(kind=8), PARAMETER :: h1 = 1720.d0
+!!    REAL(kind=8), PARAMETER :: h0 = 1540.d0
+!!    REAL(kind=8), PARAMETER :: h1 = 1720.d0
+    REAL(kind=8), PARAMETER :: h0 = 1615.d0   !! Flat surface
+    REAL(kind=8), PARAMETER :: h1 = 1700.d0
 
     INTEGER, PARAMETER :: nmax = 100
     REAL(kind=8), DIMENSION(nmax) :: xp,yp
@@ -29,6 +31,12 @@ SUBROUTINE qinit(meqn,mbc,mx,my,xlower,ylower,dx,dy,q,maux,aux)
     INTEGER :: i,j
     REAL(kind=8) :: omega,x,y,eta
 
+    !! Capacity of reservoir at time of release : 251000 acre-feet
+    !! 1 acre-foot = 1233.4829 m^3
+    !! Actual mass : 251000*1233.4829 = 309,604,207 (m^3)
+    !! Total mass as reported by GeoClaw (using h0=1615, h1=1700)
+    !!        is  27,298,685 (m^3)  (assuming mass reported by GeoClaw is in m^3)
+    !!
 
     CALL set_reservoir_path(nmax,xp,yp)
 
@@ -41,9 +49,6 @@ SUBROUTINE qinit(meqn,mbc,mx,my,xlower,ylower,dx,dy,q,maux,aux)
               IF (point_in_poly(nmax,xp,yp,x,y)) THEN
                  eta = h0 + (h1-h0)/(x1-x0)*(x - x0)
                  q(1,i,j) =  MAX(0.d0,eta - aux(1,i,j))
-                 IF (q(1,i,j) .NE. 0) THEN
-!!                    WRITE(6,*) x,y,eta,aux(1,i,j),q(1,i,j)
-                 ENDIF
               ENDIF
            ENDIF
            q(2,i,j) = 0.d0

@@ -36,6 +36,7 @@ def setrun(claw_pkg='geoclaw'):
     assert claw_pkg.lower() == 'geoclaw',  "Expected claw_pkg = 'geoclaw'"
 
     num_dim = 2
+
     rundata = data.ClawRunData(claw_pkg, num_dim)
 
     #------------------------------------------------------------------
@@ -122,7 +123,7 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        n_hours = 24
+        n_hours = 4
         clawdata.num_output_times = int(12*n_hours)  # Plot every 5 minutes
         clawdata.tfinal = 60*60*n_hours
         clawdata.output_t0 = True  # output at initial (or restart) time?
@@ -269,7 +270,7 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 3    # Set to 3 for best results
+    amrdata.amr_levels_max = 5    # Set to 3 for best results
 
     # List of refinement ratios at each level (length at least mxnest-1)
     amrdata.refinement_ratios_x = [2,4,4,4]
@@ -283,7 +284,6 @@ def setrun(claw_pkg='geoclaw'):
     #   'center',  'capacity', 'xleft', or 'yleft'  (see documentation).
 
     amrdata.aux_type = ['center','capacity','yleft']
-
 
 
     # Flag using refinement routine flag2refine rather than richardson error
@@ -304,6 +304,65 @@ def setrun(claw_pkg='geoclaw'):
     # print info about each regridding up to this level:
     amrdata.verbosity_regrid = 0
 
+    # More AMR parameters can be set -- see the defaults in pyclaw/data.py
+
+    # == setregions.data values ==
+    regions = rundata.regiondata.regions
+    # to specify regions of refinement append lines of the form
+    #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
+    regions.append([4,4, 0, 1.e10,-111.7,-111.24,43.83, 43.9881])
+
+    # region locations
+    xll = [-111.623926, 43.913661]  # From email
+    xur = [-111.620150, 43.916382]  # from email
+    # regions.append([5,5,1e10, -111.623926, -111.620150,43.913661,43.916382])
+    regions.append([5,5,0, 1e10, -111.631, -111.616, 43.910,43.920])
+
+    # == setgauges.data values ==
+    # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
+
+    # Wilford
+    xc,yc = [-111.672222,43.914444]
+    rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Wilford
+
+    # Teton City
+    xc,yc = [-111.669167,43.887778]
+    rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Teton City
+
+    # INL Gauges
+    # South West corner
+    xll = [-111.623926, 43.913661]  # From email
+
+    # North East corner
+    xur = [-111.620150, 43.916382]  # from email
+
+    m = 4  # Number of gauges along edge (minus 1)
+    s = np.linspace(0,1.,m+1)
+
+
+    # start at SW corner; build gauges in counter-clockwise order in a
+    # square around the region [xll,xur].
+    gauge_counter = 100
+    for i in range(0,m):
+        x = xll[0] + (xur[0] - xll[0])*s[i]
+        rundata.gaugedata.gauges.append([gauge_counter,x,xll[1],0.,clawdata.tfinal])
+        gauge_counter = gauge_counter + 1
+
+    for i in range(0,m):
+        y = xll[1] + (xur[1] - xll[1])*s[i]
+        rundata.gaugedata.gauges.append([gauge_counter,xur[0],y,0.,clawdata.tfinal])
+        gauge_counter = gauge_counter + 1
+
+    for i in range(0,m):
+        x = xur[0] + (xll[0] - xur[0])*s[i]
+        rundata.gaugedata.gauges.append([gauge_counter,x,xur[1],0.,clawdata.tfinal])
+        gauge_counter = gauge_counter + 1
+
+    for i in range(0,m):
+        y = xur[1] + (xll[1] - xur[1])*s[i]
+        rundata.gaugedata.gauges.append([gauge_counter,xll[0],y,0.,clawdata.tfinal])
+        gauge_counter = gauge_counter + 1
+
 
     #  ----- For developers -----
     # Toggle debugging print statements:
@@ -318,42 +377,6 @@ def setrun(claw_pkg='geoclaw'):
     amrdata.tprint = True      # time step reporting each level
     amrdata.uprint = False      # update/upbnd reporting
 
-    # More AMR parameters can be set -- see the defaults in pyclaw/data.py
-
-    # == setregions.data values ==
-    regions = rundata.regiondata.regions
-    # to specify regions of refinement append lines of the form
-    #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-    regions.append([5,5, 0, 1.e10,-111.7,-111.24,43.83, 43.9881])
-
-
-    # Inverse of map_topo_to_latlong, defined in setplot_kml.py
-    def map_latlong_to_topo(xp,yp):
-        # map plot_xlim --> ge_xlim
-        # map plot_ylim --> ge_ylim
-        ge_xlim = np.array([-111.96132553, -111.36256443])
-        ge_ylim = np.array([43.79453362, 43.95123268])
-        topo_xlim = np.array([0,48000])
-        topo_ylim = np.array([0,17400])
-        slope_x = np.diff(ge_xlim)/np.diff(topo_xlim)
-        slope_y = np.diff(ge_ylim)/np.diff(topo_ylim)
-        xc = 1./slope_x*(xp-ge_xlim[0]) + topo_xlim[0]
-        yc = 1./slope_y*(yp-ge_ylim[0]) + topo_ylim[0]
-
-        return xc[0],yc[0]
-
-    # == setgauges.data values ==
-    # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
-
-    # Wilford
-    # xc,yc = map_latlong_to_topo(-111.672222,43.914444)
-    xc,yc = [-111.672222,43.914444]
-    rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Wilford
-
-    # Teton City
-    # xc,yc = map_latlong_to_topo(-111.669167,43.887778)
-    xc,yc = [-111.669167,43.887778]
-    rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Teton City
 
     return rundata
     # end of function setrun
@@ -428,7 +451,6 @@ def setgeo(rundata):
     return rundata
     # end of function setgeo
     # ----------------------
-
 
 
 if __name__ == '__main__':

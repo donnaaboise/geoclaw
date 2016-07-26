@@ -44,23 +44,6 @@ def setplot(plotdata):
     # Set to a URL where KMZ file will be published.
     # plotdata.kml_publish = 'http://math.boisestate.edu/~calhoun/visclaw/GoogleEarth/kmz'
 
-
-    # This maps topo coordinates [0,48000]x[0,17540] to lat/long coordinates
-    # needed for Google Earth.
-    def map_topo_to_latlong(xc,yc):
-        ge_xlim = [-111.96132553, -111.36256443]
-        ge_ylim = [43.79453362, 43.95123268]
-        topo_xlim = [0,48000]
-        topo_ylim = [0,17400]
-        slope_x = (ge_xlim[1]-ge_xlim[0])/(topo_xlim[1]-topo_xlim[0])
-        slope_y = (ge_ylim[1]-ge_ylim[0])/(topo_ylim[1]-topo_ylim[0])
-        xp = slope_x*(xc-topo_xlim[0]) + ge_xlim[0];
-        yp = slope_y*(yc-topo_ylim[0]) + ge_ylim[0];
-
-        return xp,yp
-
-    plotdata.kml_map_topo_to_latlong =  map_topo_to_latlong
-
     #-----------------------------------------------------------
     # Figure for KML files
     #----------------------------------------------------------
@@ -71,11 +54,14 @@ def setplot(plotdata):
     plotfigure.kml_use_for_initial_view = True
 
     # Latlong box used for GoogleEarth
-    plotfigure.kml_xlimits = [-111.96132553, -111.36256443]  #
-    plotfigure.kml_ylimits = [43.79453362, 43.95123268]
+
+    # plotfigure.kml_xlimits = [-111.96132553, -111.36256443]  #
+    # plotfigure.kml_ylimits = [43.79453362, 43.95123268]
+    plotfigure.kml_xlimits = [ -112.3895, -111.2400]
+    plotfigure.kml_ylimits = [43.5818, 43.9881]
 
     # Use computational coordinates for plotting
-    plotfigure.kml_use_figure_limits = False
+    plotfigure.kml_use_figure_limits = True
 
     # --------------------------------------------------
     # Resolution (should be consistent with data)
@@ -96,7 +82,7 @@ def setplot(plotdata):
 
     # --------------------------------------------------
 
-    plotfigure.kml_tile_images = False    # Tile images for faster loading.  Requires GDAL [False]
+    plotfigure.kml_tile_images = True    # Tile images for faster loading.  Requires GDAL [False]
 
     # Color axis : transparency below 0.1*(cmax-cmin)
     cmin = 0
@@ -108,8 +94,6 @@ def setplot(plotdata):
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = geoplot.depth   # Plot height field h.
     plotitem.pcolor_cmap = geoplot.googleearth_flooding
-    plotaxes.xlimits = [0,48000]   # Computational coordinates used for creating PNG file
-    plotaxes.ylimits = [0,17400]
     plotitem.pcolor_cmin = cmin
     plotitem.pcolor_cmax = cmax
 
@@ -174,7 +158,7 @@ def setplot(plotdata):
     plotdata.parallel = True
     plotdata.printfigs = True               # print figures
     plotdata.print_format = 'png'           # file format
-    plotdata.print_framenos = 'all'         # list of frames to print
+    plotdata.print_framenos = range(0,21)         # list of frames to print
     plotdata.print_gaugenos = 'all'         # list of gauges to print
     plotdata.print_fignos = [1,300]         # list of figures to print
 
