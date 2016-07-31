@@ -8,6 +8,8 @@ that will be read in by the Fortran code.
 
 import os
 import numpy as np
+from pdb import *
+
 
 try:
     CLAW = os.environ['CLAW']
@@ -62,24 +64,46 @@ def setrun(claw_pkg='geoclaw'):
     # Number of space dimensions:
     clawdata.num_dim = num_dim
 
-    # Lower and upper edge of computational domain:
-#    dx = 0.000374360513991
-    clawdata.lower[0] = -112.3895
-    # clawdata.lower[0] = -111.6
-    clawdata.upper[0] = -111.2400
+    # Topo info (TetonDamLatLong.topo)
+    m_topo = 4180
+    n_topo = 1464
+    xllcorner = -112.390734400000
+    yllcorner = 43.581746970335
+    cellsize = 0.000277729665
 
-    clawdata.lower[1] = 43.5818
-    # clawdata.lower[1] = 43.85
-    clawdata.upper[1] = 43.9881
+    # Derived info from the topo map
+    mx_topo = m_topo - 1
+    my_topo = n_topo - 1
+    xurcorner = xllcorner + cellsize*mx_topo
+    yurcorner = yllcorner + cellsize*my_topo
+    ll_topo = np.array([xllcorner, yllcorner])
+    ur_topo = np.array([xurcorner, yurcorner])
 
-    # Domain size : 103526 x 45194 (meters).
-    # Preserve aspect ratio : 103526/45194 approx. 2.2907
-    # 55/24 = 2.2917
-    clawdata.num_cells[0] = 55
-    clawdata.num_cells[1] =  24
+    dims_topo = ur_topo - ll_topo
 
-    print "dx = %12.4g" % ((clawdata.upper[0] - clawdata.lower[0])/clawdata.num_cells[0])
-    print "dy = %12.4g" % ((clawdata.upper[1] - clawdata.lower[1])/clawdata.num_cells[1])
+    # Try to match aspect ratio of topo map
+    clawdata.num_cells[0] = 54
+    clawdata.num_cells[1] =  19
+
+    print "Approximate aspect ratio : {0:16.8f}".format(float(clawdata.num_cells[0])/clawdata.num_cells[1])
+    print "Actual      aspect ratio : {0:16.8f}".format(dims_topo[0]/dims_topo[1])
+
+    dim_topo = ur_topo - ll_topo
+    mdpt_topo = ll_topo + 0.5*(ur_topo-ll_topo)
+
+    dim_comp = 0.95*dim_topo   # Shrink domain inside of given bathymetry.
+
+    clawdata.lower[0] = mdpt_topo[0] - dim_comp[0]/2.0
+    clawdata.upper[0] = mdpt_topo[0] + dim_comp[0]/2.0
+
+    clawdata.lower[1] = mdpt_topo[1] - dim_comp[1]/2.0
+    clawdata.upper[1] = mdpt_topo[1] + dim_comp[1]/2.0
+    print "[{0:16.8f},{1:16.8f}]".format(*clawdata.lower)
+    print "[{0:16.8f},{1:16.8f}]".format(*clawdata.upper)
+
+    dims_computed = np.array([clawdata.upper[0]-clawdata.lower[0], clawdata.upper[1]-clawdata.lower[1]])
+    print "Computed aspect ratio    : {0:16.8f}".format(dims_computed[0]/dims_computed[1])
+
 
     # ---------------
     # Size of system:
@@ -264,20 +288,17 @@ def setrun(claw_pkg='geoclaw'):
         clawdata.checkpt_interval = 5
 
 
-    # ---------------
+    # -----------------------------------------------
     # AMR parameters:
-    # ---------------
+    # -----------------------------------------------
     amrdata = rundata.amrdata
 
-    # max number of refinement levels:
     amrdata.amr_levels_max = 5    # Set to 3 for best results
-
-    # List of refinement ratios at each level (length at least mxnest-1)
     amrdata.refinement_ratios_x = [2,4,4,4]
     amrdata.refinement_ratios_y = [2,4,4,4]
     amrdata.refinement_ratios_t = [2,4,4,4]
-   # rundata.tol = -1
-   # rundata.tolsp = 0.001
+    # rundata.tol = -1
+    # rundata.tolsp = 0.001
 
     # Specify type of each aux variable in amrdata.auxtype.
     # This must be a list of length maux, each element of which is one of:
@@ -289,37 +310,48 @@ def setrun(claw_pkg='geoclaw'):
     # Flag using refinement routine flag2refine rather than richardson error
     amrdata.flag_richardson = False    # use Richardson?
     amrdata.flag2refine = True
-
-    # steps to take on each level L between regriddings of level L+1:
     amrdata.regrid_interval = 3
-
-    # width of buffer zone around flagged points:
-    # (typically the same as regrid_interval so waves don't escape):
     amrdata.regrid_buffer_width  = 2
-
-    # clustering alg. cutoff for (# flagged pts) / (total # of cells refined)
-    # (closer to 1.0 => more small grids may be needed to cover flagged cells)
     amrdata.clustering_cutoff = 0.700000
-
-    # print info about each regridding up to this level:
     amrdata.verbosity_regrid = 0
 
-    # More AMR parameters can be set -- see the defaults in pyclaw/data.py
+    # -----------------------------------------------
+    # INL Regions
+    #   Regions to be refined :
+    #    (1) Refine initial reservoir to level 4
+    #        (otherwise, we won't resolve valley, and
+    #        won't fill the reservoir properly)
+    #    (2) Refine around nuclear power plant (indicated by gauge
+    #        100, 101, ..., 115, below)
+    #
+    # To specify regions of refinement append lines of the form
+    #    regions.append([minlevel,maxlevel,t1,t2,x1,x2,y1,y2])
 
-    # == setregions.data values ==
+    # -----------------------------------------------
     regions = rundata.regiondata.regions
-    # to specify regions of refinement append lines of the form
-    #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
+
+    # Region containing initial reservoir
     regions.append([4,4, 0, 1.e10,-111.7,-111.24,43.83, 43.9881])
 
-    # region locations
-    xll = [-111.623926, 43.913661]  # From email
-    xur = [-111.620150, 43.916382]  # from email
-    # regions.append([5,5,1e10, -111.623926, -111.620150,43.913661,43.916382])
-    regions.append([5,5,0, 1e10, -111.631, -111.616, 43.910,43.920])
+    # Box containing gauge location locations
+    import tools
 
-    # == setgauges.data values ==
-    # for gauges append lines of the form  [gaugeno, x, y, t1, t2]
+    xll = [-111.64, 43.913661]  # From email
+    xur = [-111.60, 43.92]  # from email
+    region_lower, region_upper,_ = tools.region_coords(xll,xur,
+                                                     clawdata.num_cells,
+                                                     clawdata.lower,
+                                                     clawdata.upper)
+
+    regions.append([5,5,0, 1e10, region_lower[0],region_upper[0],region_lower[1],region_upper[1]])
+
+    # -------------------------------------------------------
+    # INL Gauges
+    #     -- Set gauges at Teton City and Wilford
+    #     -- Remaining gauges build border around power plant
+    #
+    # For gauges append lines of the form  [gaugeno, x, y, t1, t2]
+    # -------------------------------------------------------
 
     # Wilford
     xc,yc = [-111.672222,43.914444]
@@ -329,20 +361,20 @@ def setrun(claw_pkg='geoclaw'):
     xc,yc = [-111.669167,43.887778]
     rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Teton City
 
-    # INL Gauges
-    # South West corner
+    # Power plant, with border constructed of 4*m gauges
+    # Start at SW corner; build gauges in counter-clockwise order in a
+    # square around the region [xll,xur].
+
+    m = 4  # Gauge spacing along one edge (m=4 --> edge divided into four sections)
+    gauge_counter = 100
+
+    # South West corner of power plant
     xll = [-111.623926, 43.913661]  # From email
 
-    # North East corner
+    # North East corner of power plant
     xur = [-111.620150, 43.916382]  # from email
 
-    m = 4  # Number of gauges along edge (minus 1)
     s = np.linspace(0,1.,m+1)
-
-
-    # start at SW corner; build gauges in counter-clockwise order in a
-    # square around the region [xll,xur].
-    gauge_counter = 100
     for i in range(0,m):
         x = xll[0] + (xur[0] - xll[0])*s[i]
         rundata.gaugedata.gauges.append([gauge_counter,x,xll[1],0.,clawdata.tfinal])
@@ -364,8 +396,10 @@ def setrun(claw_pkg='geoclaw'):
         gauge_counter = gauge_counter + 1
 
 
-    #  ----- For developers -----
-    # Toggle debugging print statements:
+    # -------------------------------------------------------
+    # For developers
+    #    -- Toggle debugging print statements:
+    # -------------------------------------------------------
     amrdata.dprint = False      # print domain flags
     amrdata.eprint = False      # print err est flags
     amrdata.edebug = False      # even more err est flags

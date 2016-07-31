@@ -20,7 +20,7 @@ SUBROUTINE qinit(meqn,mbc,mx,my,xlower,ylower,dx,dy,q,maux,aux)
     REAL(kind=8), PARAMETER :: x1 = -111.24d0  !! Left edge of domain
 !!    REAL(kind=8), PARAMETER :: h0 = 1540.d0
 !!    REAL(kind=8), PARAMETER :: h1 = 1720.d0
-    REAL(kind=8), PARAMETER :: h0 = 1615.d0   !! Flat surface
+    REAL(kind=8), PARAMETER :: h0 = 1625.d0   !! Flat surface
     REAL(kind=8), PARAMETER :: h1 = 1700.d0
 
     INTEGER, PARAMETER :: nmax = 100
@@ -36,7 +36,8 @@ SUBROUTINE qinit(meqn,mbc,mx,my,xlower,ylower,dx,dy,q,maux,aux)
     !! Actual mass : 251000*1233.4829 = 309,604,207 (m^3)
     !! Total mass as reported by GeoClaw (using h0=1615, h1=1700)
     !!        is  27,298,685 (m^3)  (assuming mass reported by GeoClaw is in m^3)
-    !!
+    !! Total mass as reported by GeoClaw (using h0=1625.d0, h1 = 1700)
+    !!        is 62,069,921  (m^3)
 
     CALL set_reservoir_path(nmax,xp,yp)
 

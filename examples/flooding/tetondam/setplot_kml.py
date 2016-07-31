@@ -44,8 +44,17 @@ def setplot(plotdata):
     # Set to a URL where KMZ file will be published.
     # plotdata.kml_publish = 'http://math.boisestate.edu/~calhoun/visclaw/GoogleEarth/kmz'
 
+
+    # Cells used in setrun.py
+    num_cells = [54,19]
+    lower = [-112.36171859324912, 43.591904932832371]
+    upper = [-111.25911793671588, 43.977907507732617]
+    xll = [-111.64, 43.913661]
+    xur = [-111.60, 43.92]
+
     #-----------------------------------------------------------
-    # Figure for KML files
+    # Figure for KML files (large view)
+    # This under-resolves the finest level.
     #----------------------------------------------------------
     plotfigure = plotdata.new_plotfigure(name='Teton Dam',figno=1)
     plotfigure.show = True
@@ -55,34 +64,89 @@ def setplot(plotdata):
 
     # Latlong box used for GoogleEarth
 
-    # plotfigure.kml_xlimits = [-111.96132553, -111.36256443]  #
-    # plotfigure.kml_ylimits = [43.79453362, 43.95123268]
-    plotfigure.kml_xlimits = [ -112.3895, -111.2400]
-    plotfigure.kml_ylimits = [43.5818, 43.9881]
+    plotfigure.kml_xlimits = [lower[0], upper[0]]
+    plotfigure.kml_ylimits = [lower[1], upper[1]]
 
     # Use computational coordinates for plotting
     plotfigure.kml_use_figure_limits = True
 
     # --------------------------------------------------
     # Resolution (should be consistent with data)
-    # Refinement levels : [4,4]; max level = 3; num_cells = [90,32]
-    # Aim for 1 pixel per finest level grid cell.  Trying to increase the
-    # resolution beyond this can lead to weird aliasing effects (which
-    # only seem to affect the vertical resolution - possible bug in Matplotlib?)
+    # Refinement levels : [2,4,4,4]; max level = 5; num_cells = [55,24]
+    # Aim for 1 pixel per finest level grid cell.
+    # Choose a figure size that matches the coarse grid resolution.
+    # Set the dpi so that figsize*dpi = finest level effective resolution.
 
-    # If amr refinement ratios set to [4,4]; max_level = 2
-    # figsize*dpi = [36,12.8]*10 = [90,32]*4 = [360,128]
-    plotfigure.kml_figsize = [36.0, 12.8]
-    plotfigure.kml_dpi = 2*10
-
-    # If amr refinement ratios set to [4,4]; max_level = 3
-    # figsize*dpi = [144,51.2]*10 = [90,32]*4*4 = [1440,512]
-    plotfigure.kml_figsize = [144.0, 51.2]
-    plotfigure.kml_dpi = 20
+    # If amr refinement ratios set to [2,4,4,4]; max_level = 5
+    # figsize*dpi = [54,19]*2*4**2 = [1728,608]
+    plotfigure.kml_figsize = [54,19]
+    plotfigure.kml_dpi = 32
 
     # --------------------------------------------------
 
-    plotfigure.kml_tile_images = True    # Tile images for faster loading.  Requires GDAL [False]
+    plotfigure.kml_tile_images = False    # Tile images for faster loading.  Requires GDAL [False]
+
+    # Color axis : transparency below 0.1*(cmax-cmin)
+    cmin = 0
+    cmax = 5
+    cmap = geoplot.googleearth_flooding  # transparent --> light blue --> dark blue
+
+    # Water
+    plotaxes = plotfigure.new_plotaxes('kml')
+    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    plotitem.plot_var = geoplot.depth   # Plot height field h.
+    plotitem.pcolor_cmap = geoplot.googleearth_flooding
+    plotitem.pcolor_cmin = cmin
+    plotitem.pcolor_cmax = cmax
+
+    def kml_colorbar(filename):
+        geoplot.kml_build_colorbar(filename,cmap,cmin,cmax)
+
+    plotfigure.kml_colorbar = kml_colorbar
+
+
+    #-----------------------------------------------------------
+    # Figure for KML files (zoomed view on region)
+    #----------------------------------------------------------
+    plotfigure = plotdata.new_plotfigure(name='Power Plant (zoom)',figno=2)
+    plotfigure.show = True
+
+    plotfigure.use_for_kml = True
+    plotfigure.kml_use_for_initial_view = False
+
+    # Latlong box used for GoogleEarth
+
+    import tools
+    region_lower, region_upper, figsize = tools.region_coords(xll,xur,
+                                                              num_cells,
+                                                              lower,
+                                                              upper)
+
+    # # Get degrees per finest level :
+    # dx_coarse = (upper[0]-lower[0])/num_cells[0]
+    # dy_coarse = (upper[1]-lower[1])/num_cells[1]
+    #
+    # # Zoom region
+    # mx_xlow = np.floor((xll[0] - lower[0])/dx_coarse).astype(int)
+    # my_ylow = np.floor((xll[1] - lower[1])/dy_coarse).astype(int)
+    # mx_zoom = np.ceil((xur[0] - xll[0])/dx_coarse).astype(int)
+    # my_zoom = np.ceil((xur[1] - xll[1])/dy_coarse).astype(int)
+    # xlow = lower[0] + mx_xlow*dx_coarse
+    # ylow = lower[1] + my_ylow*dy_coarse
+
+    plotfigure.kml_xlimits = [region_lower[0],region_upper[0]]
+    plotfigure.kml_ylimits = [region_lower[1], region_upper[1]]
+
+    # Use computational coordinates for plotting
+    plotfigure.kml_use_figure_limits = True
+
+    # --------------------------------------------------
+    plotfigure.kml_figsize = figsize*8
+    plotfigure.kml_dpi = 4*4
+
+    # --------------------------------------------------
+
+    plotfigure.kml_tile_images = False    # Tile images for faster loading.  Requires GDAL [False]
 
     # Color axis : transparency below 0.1*(cmax-cmin)
     cmin = 0
@@ -160,7 +224,7 @@ def setplot(plotdata):
     plotdata.print_format = 'png'           # file format
     plotdata.print_framenos = range(0,21)         # list of frames to print
     plotdata.print_gaugenos = 'all'         # list of gauges to print
-    plotdata.print_fignos = [1,300]         # list of figures to print
+    plotdata.print_fignos = [1,2,300]         # list of figures to print
 
     plotdata.html = False                     # create html files of plots?
     plotdata.html_movie = False                     # create html files of plots?
