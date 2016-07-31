@@ -44,6 +44,8 @@ def setplot(plotdata):
     # Set to a URL where KMZ file will be published.
     # plotdata.kml_publish = 'http://math.boisestate.edu/~calhoun/visclaw/GoogleEarth/kmz'
 
+    # Add [file_name,visibility]
+    plotdata.kml_user_files.append(['teton_dam_validate.kml',True])
 
     # Cells used in setrun.py
     num_cells = [54,19]
@@ -161,11 +163,6 @@ def setplot(plotdata):
     plotitem.pcolor_cmin = cmin
     plotitem.pcolor_cmax = cmax
 
-    def kml_colorbar(filename):
-        geoplot.kml_build_colorbar(filename,cmap,cmin,cmax)
-
-    plotfigure.kml_colorbar = kml_colorbar
-
     #-----------------------------------------
     # Figures for gauges
     #-----------------------------------------
@@ -222,7 +219,7 @@ def setplot(plotdata):
     plotdata.parallel = True
     plotdata.printfigs = True               # print figures
     plotdata.print_format = 'png'           # file format
-    plotdata.print_framenos = range(0,21)         # list of frames to print
+    plotdata.print_framenos = 'all'         # list of frames to print
     plotdata.print_gaugenos = 'all'         # list of gauges to print
     plotdata.print_fignos = [1,2,300]         # list of figures to print
 

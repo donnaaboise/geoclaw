@@ -147,8 +147,8 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        n_hours = 4
-        clawdata.num_output_times = int(12*n_hours)  # Plot every 5 minutes
+        n_hours = 3
+        clawdata.num_output_times = int(30*n_hours)  # Plot every 5 minutes
         clawdata.tfinal = 60*60*n_hours
         clawdata.output_t0 = True  # output at initial (or restart) time?
 
@@ -323,6 +323,7 @@ def setrun(claw_pkg='geoclaw'):
     #        won't fill the reservoir properly)
     #    (2) Refine around nuclear power plant (indicated by gauge
     #        100, 101, ..., 115, below)
+    #    (3) Computational domain, with maxlevel=4
     #
     # To specify regions of refinement append lines of the form
     #    regions.append([minlevel,maxlevel,t1,t2,x1,x2,y1,y2])
@@ -344,6 +345,9 @@ def setrun(claw_pkg='geoclaw'):
                                                      clawdata.upper)
 
     regions.append([5,5,0, 1e10, region_lower[0],region_upper[0],region_lower[1],region_upper[1]])
+
+    # Computational domain.  With exception of region above, don't go beyond level 4
+    regions.append([1,4,0, 1e10, clawdata.lower[0],clawdata.upper[0],clawdata.lower[1],clawdata.upper[1]])
 
     # -------------------------------------------------------
     # INL Gauges

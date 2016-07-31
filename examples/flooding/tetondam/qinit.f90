@@ -21,7 +21,7 @@ SUBROUTINE qinit(meqn,mbc,mx,my,xlower,ylower,dx,dy,q,maux,aux)
 !!    REAL(kind=8), PARAMETER :: h0 = 1540.d0
 !!    REAL(kind=8), PARAMETER :: h1 = 1720.d0
     REAL(kind=8), PARAMETER :: h0 = 1625.d0   !! Flat surface
-    REAL(kind=8), PARAMETER :: h1 = 1700.d0
+    REAL(kind=8), PARAMETER :: h1 = 1720.d0
 
     INTEGER, PARAMETER :: nmax = 100
     REAL(kind=8), DIMENSION(nmax) :: xp,yp
