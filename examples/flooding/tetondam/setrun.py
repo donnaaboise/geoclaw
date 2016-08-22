@@ -369,7 +369,7 @@ def setrun(claw_pkg='geoclaw'):
     # Start at SW corner; build gauges in counter-clockwise order in a
     # square around the region [xll,xur].
 
-    m = 4  # Gauge spacing along one edge (m=4 --> edge divided into four sections)
+    m = 20  # Gauge spacing along one edge (m=4 --> edge divided into four sections)
     gauge_counter = 100
 
     # South West corner of power plant
