@@ -147,8 +147,9 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        n_hours = 3
-        clawdata.num_output_times = int(30*n_hours)  # Plot every 5 minutes
+        n_hours = 0.5
+        frames_per_minute = 60.0/5.0 # Frames every 5 seconds
+        clawdata.num_output_times = int(frames_per_minute*60*n_hours)  # Plot every 10 seconds
         clawdata.tfinal = 60*60*n_hours
         clawdata.output_t0 = True  # output at initial (or restart) time?
 

@@ -71,6 +71,8 @@ def setplot(plotdata):
 
     # Use computational coordinates for plotting
     plotfigure.kml_use_figure_limits = True
+    plotfigure.kml_tile_images = True    # Tile images for faster loading.  Requires GDAL [False]
+
 
     # --------------------------------------------------
     # Resolution (should be consistent with data)
@@ -85,8 +87,6 @@ def setplot(plotdata):
     plotfigure.kml_dpi = 32
 
     # --------------------------------------------------
-
-    plotfigure.kml_tile_images = False    # Tile images for faster loading.  Requires GDAL [False]
 
     # Color axis : transparency below 0.1*(cmax-cmin)
     cmin = 0
@@ -148,7 +148,7 @@ def setplot(plotdata):
 
     # --------------------------------------------------
 
-    plotfigure.kml_tile_images = False    # Tile images for faster loading.  Requires GDAL [False]
+    plotfigure.kml_tile_images = True    # Tile images for faster loading.  Requires GDAL [False]
 
     # Color axis : transparency below 0.1*(cmax-cmin)
     cmin = 0
@@ -219,9 +219,9 @@ def setplot(plotdata):
     plotdata.parallel = True
     plotdata.printfigs = True               # print figures
     plotdata.print_format = 'png'           # file format
-    plotdata.print_framenos = 'all'         # list of frames to print
+    plotdata.print_framenos = range(130,361)         # list of frames to print
     plotdata.print_gaugenos = 'all'         # list of gauges to print
-    plotdata.print_fignos = [1,2,300]         # list of figures to print
+    plotdata.print_fignos = [2,300]         # list of figures to print
 
     plotdata.html = False                     # create html files of plots?
     plotdata.html_movie = False                     # create html files of plots?
