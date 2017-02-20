@@ -84,16 +84,27 @@ def setplot(plotdata):
     plotaxes.scaled = True
 
 
+    # Cells used in setrun.py
+    num_cells = [54,19]
+    lower = [-112.36171859324912, 43.591904932832371]
+    upper = [-111.25911793671588, 43.977907507732617]
+    xll = [-111.64, 43.913661]
+    xur = [-111.60, 43.92]
+
+    xll = [lower[0],lower[1]]
+    xur = [upper[0],upper[1]]
+
+
     dark_blue = [0.2,0.2,0.7];
     light_blue = [0.7,0.7,1.0];
     flooding_colormap = colormaps.make_colormap({ -1.0:light_blue,
                                                  1.0:dark_blue})
     # Water
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-    plotitem.plot_var = geoplot.surface
+    plotitem.plot_var = geoplot.depth
     plotitem.pcolor_cmap = flooding_colormap
     plotitem.pcolor_cmin = 0
-    plotitem.pcolor_cmax = 30
+    plotitem.pcolor_cmax = 100
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.patchedges_show = False
@@ -102,13 +113,13 @@ def setplot(plotdata):
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = geoplot.land
     plotitem.pcolor_cmap = geoplot.land_colors
-    plotitem.pcolor_cmin = 0.0
-    plotitem.pcolor_cmax = 900.0
+    plotitem.pcolor_cmin = 1400
+    plotitem.pcolor_cmax = 2800
     plotitem.add_colorbar = True
     plotitem.amr_celledges_show = [0,0,0]
     plotitem.patchedges_show = 0
-    plotaxes.xlimits = [0,48000]
-    plotaxes.ylimits = [0,17400]
+    plotaxes.xlimits = [lower[0], upper[0]]
+    plotaxes.ylimits = [lower[1], upper[1]]
 
     # Add contour lines of bathymetry:
     plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
@@ -187,9 +198,9 @@ def setplot(plotdata):
     plotdata.parallel = True
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
-    plotdata.print_framenos = range(0,36)          # list of frames to print
-    plotdata.print_gaugenos = 'all'            # list of gauges to print
-    plotdata.print_fignos = [0,300]            # list of figures to print
+    plotdata.print_framenos = range(0,10)          # list of frames to print
+    plotdata.print_gaugenos = [100]            # list of gauges to print
+    plotdata.print_fignos = 'all'            # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.html_movie = True                     # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index

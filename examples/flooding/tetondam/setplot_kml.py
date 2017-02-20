@@ -219,9 +219,11 @@ def setplot(plotdata):
     plotdata.parallel = True
     plotdata.printfigs = True               # print figures
     plotdata.print_format = 'png'           # file format
-    plotdata.print_framenos = range(130,361)         # list of frames to print
-    plotdata.print_gaugenos = 'all'         # list of gauges to print
-    plotdata.print_fignos = [2,300]         # list of figures to print
+    plotdata.print_framenos = range(0,150)    # list of frames to print
+    plotdata.print_fignos = [1,300]             # list of figures to print
+
+    # plotdata.gauges_fignos = [300]
+    plotdata.print_gaugenos = 'all'        # list of gauges to print
 
     plotdata.html = False                     # create html files of plots?
     plotdata.html_movie = False                     # create html files of plots?

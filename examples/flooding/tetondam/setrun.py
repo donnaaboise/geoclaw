@@ -147,8 +147,8 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        n_hours = 0.5
-        frames_per_minute = 60.0/5.0 # Frames every 5 seconds
+        n_hours = 3
+        frames_per_minute = 1.0 # Frames every 5 seconds
         clawdata.num_output_times = int(frames_per_minute*60*n_hours)  # Plot every 10 seconds
         clawdata.tfinal = 60*60*n_hours
         clawdata.output_t0 = True  # output at initial (or restart) time?
@@ -160,7 +160,8 @@ def setrun(claw_pkg='geoclaw'):
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
         clawdata.output_step_interval = 1
-        clawdata.total_steps = 1
+        clawdata.total_steps = 20
+        clawdata.tfinal = 3600
         clawdata.output_t0 = True
 
 
@@ -339,7 +340,7 @@ def setrun(claw_pkg='geoclaw'):
     import tools
 
     xll = [-111.64, 43.913661]  # From email
-    xur = [-111.60, 43.92]  # from email
+    xur = [-111.60, 43.92]      # from email
     region_lower, region_upper,_ = tools.region_coords(xll,xur,
                                                      clawdata.num_cells,
                                                      clawdata.lower,
@@ -358,6 +359,8 @@ def setrun(claw_pkg='geoclaw'):
     # For gauges append lines of the form  [gaugeno, x, y, t1, t2]
     # -------------------------------------------------------
 
+    last_val = 0   # Not sure what to put here
+
     # Wilford
     xc,yc = [-111.672222,43.914444]
     rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Wilford
@@ -370,7 +373,7 @@ def setrun(claw_pkg='geoclaw'):
     # Start at SW corner; build gauges in counter-clockwise order in a
     # square around the region [xll,xur].
 
-    m = 20  # Gauge spacing along one edge (m=4 --> edge divided into four sections)
+    m = 2  # Gauge spacing along one edge (m=4 --> edge divided into four sections)
     gauge_counter = 100
 
     # South West corner of power plant
@@ -399,7 +402,6 @@ def setrun(claw_pkg='geoclaw'):
         y = xur[1] + (xll[1] - xur[1])*s[i]
         rundata.gaugedata.gauges.append([gauge_counter,xll[0],y,0.,clawdata.tfinal])
         gauge_counter = gauge_counter + 1
-
 
     # -------------------------------------------------------
     # For developers
@@ -462,7 +464,8 @@ def setgeo(rundata):
     # == settopo.data values ==
     topo_data = rundata.topo_data
     # for topography, append lines of the form
-    #    [topotype, minlevel, maxlevel, t1, t2, fname]
+    #    [topotype, minlevel, maxlevel, t1, t2, fnameg500
+
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamFloodPlain.topo']);
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLargeLowRes.topo'])
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamSmallHiRes.topo'])
