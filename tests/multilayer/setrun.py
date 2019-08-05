@@ -141,7 +141,7 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.num_eqn = 6
 
     # Number of auxiliary variables in the aux array (initialized in setaux)
-    clawdata.num_aux = 4 + rundata.multilayer_data.num_layers
+    clawdata.num_aux = 1 + rundata.multilayer_data.num_layers
 
     # Index of aux array corresponding to capacity function, if there is one:
     clawdata.capa_index = 0
@@ -334,12 +334,12 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 1
+    amrdata.amr_levels_max = 3
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [2,6]
-    amrdata.refinement_ratios_y = [2,6]
-    amrdata.refinement_ratios_t = [2,6]
+    amrdata.refinement_ratios_x = [2, 6]
+    amrdata.refinement_ratios_y = [2, 6]
+    amrdata.refinement_ratios_t = [2, 6]
 
 
     # Specify type of each aux variable in amrdata.auxtype.
@@ -377,7 +377,7 @@ def setrun(claw_pkg='geoclaw'):
     amrdata.pprint = False      # proj. of tagged points
     amrdata.rprint = False      # print regridding summary
     amrdata.sprint = False      # space/memory output
-    amrdata.tprint = True       # time step reporting each level
+    amrdata.tprint = False       # time step reporting each level
     amrdata.uprint = False      # update/upbnd reporting
     
     # More AMR parameters can be set -- see the defaults in pyclaw/data.py
@@ -432,6 +432,7 @@ def setgeo(rundata):
     geo_data.gravity = 9.81
     geo_data.coordinate_system = 1
     geo_data.earth_radius = 6367.5e3
+    geo_data.rho = [0.9, 1.0]
 
     # == Forcing Options
     geo_data.coriolis_forcing = False
@@ -464,8 +465,6 @@ def setgeo(rundata):
     # == setqinit.data values ==
     qinit_data = rundata.qinit_data
 
-
-
     return rundata
     # end of function setgeo
     # ----------------------
@@ -477,9 +476,9 @@ def set_multilayer(rundata):
 
     # Physics parameters
     data.num_layers = 2
-    data.rho = [0.9,1.0]
-    data.eta = [0.0,-0.6]
-    
+    data.layer_index = 1
+    data.eta = [0.0, -0.6]
+
     # Algorithm parameters
     data.eigen_method = 2
     data.inundation_method = 2
