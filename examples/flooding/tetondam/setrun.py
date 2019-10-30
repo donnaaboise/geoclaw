@@ -57,19 +57,57 @@ def setrun(claw_pkg='geoclaw'):
     # See below for AMR parameters.
 
 
-    # ---------------
-    # Spatial domain:
-    # ---------------
+    #------------------------------------------------------------------
+    # User specified parameters
+    #------------------------------------------------------------------
 
-    # Number of space dimensions:
-    clawdata.num_dim = num_dim
 
+    # Time stepping
+    initial_dt = 100  # Initial time step
+    fixed_dt = True   # Take constant time step
+
+    # Output files
+    output_style = 1   
+
+    if output_style == 1:
+        # Total number of frames will be frames_per_minute*60*n_hours
+        n_hours = 3               # Total number of hours in simulation        
+        frames_per_minute = 1.0   # Frames every 60 seconds
+
+    if output_style == 2:
+        output_times = [1,2,3]    # Specify exact times to output files
+
+    if output_style == 3:
+        step_interval = 10   # Create output file every 10 steps
+        total_steps = 200    # ... for a total of 200 steps (so 20 output files total)
+
+
+    # ---------------------------------------------------------------------------------
+    # Grid 
+    # Probably don't need to change anything here unless we change the topo file
+    # ---------------------------------------------------------------------------------
     # Topo info (TetonDamLatLong.topo)
     m_topo = 4180
     n_topo = 1464
     xllcorner = -112.390734400000
     yllcorner = 43.581746970335
     cellsize = 0.000277729665
+
+    # Computational coarse grid
+    mx = 54
+    my = 19
+
+    maxlevel = 4
+    ratios_x = [2,4,4,4]
+    ratios_y = [2,4,4,4]
+    ratios_t = [2,4,4,4]
+
+    # ---------------
+    # Spatial domain:
+    # ---------------
+
+    # Number of space dimensions:
+    clawdata.num_dim = num_dim
 
     # Derived info from the topo map
     mx_topo = m_topo - 1
@@ -82,11 +120,11 @@ def setrun(claw_pkg='geoclaw'):
     dims_topo = ur_topo - ll_topo
 
     # Try to match aspect ratio of topo map
-    clawdata.num_cells[0] = 54
-    clawdata.num_cells[1] =  19
+    clawdata.num_cells[0] = mx
+    clawdata.num_cells[1] =  my
 
-    print "Approximate aspect ratio : {0:16.8f}".format(float(clawdata.num_cells[0])/clawdata.num_cells[1])
-    print "Actual      aspect ratio : {0:16.8f}".format(dims_topo[0]/dims_topo[1])
+    print("Approximate aspect ratio : {0:16.8f}".format(float(clawdata.num_cells[0])/clawdata.num_cells[1]))
+    print("Actual      aspect ratio : {0:16.8f}".format(dims_topo[0]/dims_topo[1]))
 
     dim_topo = ur_topo - ll_topo
     mdpt_topo = ll_topo + 0.5*(ur_topo-ll_topo)
@@ -98,11 +136,12 @@ def setrun(claw_pkg='geoclaw'):
 
     clawdata.lower[1] = mdpt_topo[1] - dim_comp[1]/2.0
     clawdata.upper[1] = mdpt_topo[1] + dim_comp[1]/2.0
-    print "[{0:16.8f},{1:16.8f}]".format(*clawdata.lower)
-    print "[{0:16.8f},{1:16.8f}]".format(*clawdata.upper)
+    print("[{0:16.8f},{1:16.8f}]".format(*clawdata.lower))
+    print("[{0:16.8f},{1:16.8f}]".format(*clawdata.upper))
 
-    dims_computed = np.array([clawdata.upper[0]-clawdata.lower[0], clawdata.upper[1]-clawdata.lower[1]])
-    print "Computed aspect ratio    : {0:16.8f}".format(dims_computed[0]/dims_computed[1])
+    dims_computed = np.array([clawdata.upper[0]-clawdata.lower[0], 
+                             clawdata.upper[1]-clawdata.lower[1]])
+    print("Computed aspect ratio    : {0:16.8f}".format(dims_computed[0]/dims_computed[1]))
 
 
     # ---------------
@@ -143,25 +182,22 @@ def setrun(claw_pkg='geoclaw'):
     # Note that the time integration stops after the final output time.
     # The solution at initial time t0 is always written in addition.
 
-    clawdata.output_style = 1
+    clawdata.output_style = output_style
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        n_hours = 3
-        frames_per_minute = 1.0 # Frames every 5 seconds
         clawdata.num_output_times = int(frames_per_minute*60*n_hours)  # Plot every 10 seconds
         clawdata.tfinal = 60*60*n_hours
         clawdata.output_t0 = True  # output at initial (or restart) time?
 
     elif clawdata.output_style == 2:
         # Specify a list of output times.
-        clawdata.output_times = [0.5, 1.0]
+        clawdata.output_times = output_times
 
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
-        clawdata.output_step_interval = 1
-        clawdata.total_steps = 20
-        clawdata.tfinal = 3600
+        clawdata.output_step_interval = step_interval
+        clawdata.total_steps = total_steps
         clawdata.output_t0 = True
 
 
@@ -190,11 +226,11 @@ def setrun(claw_pkg='geoclaw'):
 
     # if dt_variable==1: variable time steps used based on cfl_desired,
     # if dt_variable==0: fixed time steps dt = dt_initial will always be used.
-    clawdata.dt_variable = True
+    clawdata.dt_variable = not fixed_dt
 
     # Initial time step for variable dt.
     # If dt_variable==0 then dt=dt_initial for all steps:
-    clawdata.dt_initial = 0.0001
+    clawdata.dt_initial = initial_dt
 
     # Max time step to be allowed if variable dt used:
     clawdata.dt_max = 1e+99
@@ -295,10 +331,10 @@ def setrun(claw_pkg='geoclaw'):
     # -----------------------------------------------
     amrdata = rundata.amrdata
 
-    amrdata.amr_levels_max = 5    # Set to 3 for best results
-    amrdata.refinement_ratios_x = [2,4,4,4]
-    amrdata.refinement_ratios_y = [2,4,4,4]
-    amrdata.refinement_ratios_t = [2,4,4,4]
+    amrdata.amr_levels_max = maxlevel    # Set to 3 for best results
+    amrdata.refinement_ratios_x = ratios_x
+    amrdata.refinement_ratios_y = ratios_y
+    amrdata.refinement_ratios_t = ratios_t
     # rundata.tol = -1
     # rundata.tolsp = 0.001
 
@@ -435,7 +471,7 @@ def setgeo(rundata):
     try:
         geo_data = rundata.geo_data
     except:
-        print "*** Error, this rundata has no geo_data attribute"
+        print("*** Error, this rundata has no geo_data attribute")
         raise AttributeError("Missing geo_data attribute")
 
 
