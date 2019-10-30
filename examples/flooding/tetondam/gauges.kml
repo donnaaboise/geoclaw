@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document><name>gauges.kml</name>
+
+<Placemark><name>Gauge 1</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.672, y1 = 43.9144
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6722,43.9144,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 2</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.669, y1 = 43.8878
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6692,43.8878,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 100</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.624, y1 = 43.9137
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6239,43.9137,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 101</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.623, y1 = 43.9137
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6230,43.9137,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 102</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.622, y1 = 43.9137
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6220,43.9137,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 103</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.621, y1 = 43.9137
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6211,43.9137,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 104</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.62, y1 = 43.9137
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6201,43.9137,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 105</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.62, y1 = 43.9143
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6201,43.9143,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 106</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.62, y1 = 43.915
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6201,43.9150,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 107</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.62, y1 = 43.9157
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6201,43.9157,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 108</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.62, y1 = 43.9164
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6201,43.9164,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 109</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.621, y1 = 43.9164
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6211,43.9164,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 110</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.622, y1 = 43.9164
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6220,43.9164,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 111</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.623, y1 = 43.9164
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6230,43.9164,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 112</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.624, y1 = 43.9164
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6239,43.9164,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 113</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.624, y1 = 43.9157
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6239,43.9157,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 114</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.624, y1 = 43.915
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6239,43.9150,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+<Placemark><name>Gauge 115</name>
+<description>  t1 = 0, t2 = 14400
+  x1 = -111.624, y1 = 43.9143
+</description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>
+-111.6239,43.9143,0.0000
+</coordinates>
+</Point>
+</Placemark>
+
+</Document>
+</kml>

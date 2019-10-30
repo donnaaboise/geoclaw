@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document><name>regions.kml</name>
+
+<Style id="Path">
+<LineStyle><color>FF0000FF</color><width>3</width></LineStyle>
+<PolyStyle><color>00000000</color></PolyStyle>
+</Style>
+<Placemark><name>Computational Domain</name>
+<description>  x1 = -112.362, x2 = -111.259
+  y1 = 43.5919, y2 = 43.9779
+Level 1 resolution:  dy = 0 deg, 1 min, 13.1373 sec = 2255.07 meters
+Level 2 resolution:  dy = 0 deg, 0 min, 36.5687 sec = 1127.53 meters  (refined by 2)
+Level 3 resolution:  dy = 0 deg, 0 min, 9.14217 sec = 281.883 meters  (refined by 4)
+Level 4 resolution:  dy = 0 deg, 0 min, 2.28554 sec = 70.4709 meters  (refined by 4)
+Level 5 resolution:  dy = 0 deg, 0 min, 0.571385 sec = 17.6177 meters  (refined by 4)
+</description>
+<styleUrl>#Path</styleUrl>
+<Polygon>
+<tessellate>1</tessellate>
+<altitudeMode>clampToGround</altitudeMode>
+<outerBoundaryIs><LinearRing><coordinates>
+
+-112.3617,43.5919,0.0000
+-111.2591,43.5919,0.0000
+-111.2591,43.9779,0.0000
+-112.3617,43.9779,0.0000
+-112.3617,43.5919,0.0000
+
+</coordinates></LinearRing></outerBoundaryIs>
+</Polygon>
+</Placemark>
+
+<Style id="Path">
+<LineStyle><color>FFFFFFFF</color><width>3</width></LineStyle>
+<PolyStyle><color>00000000</color></PolyStyle>
+</Style>
+<Placemark><name>Region 0</name>
+<description>minlevel = 4, maxlevel = 4
+  t1 = 0, t2 = 1e+10
+  x1 = -111.7, x2 = -111.24
+  y1 = 43.83, y2 = 43.9881
+
+Level 4 resolution:  
+dy = 0 deg, 0 min, 2.28554 sec 
+= 70.4709 meters
+</description>
+<styleUrl>#Path</styleUrl>
+<Polygon>
+<tessellate>1</tessellate>
+<altitudeMode>clampToGround</altitudeMode>
+<outerBoundaryIs><LinearRing><coordinates>
+
+-111.7000,43.8300,0.0000
+-111.2400,43.8300,0.0000
+-111.2400,43.9881,0.0000
+-111.7000,43.9881,0.0000
+-111.7000,43.8300,0.0000
+
+</coordinates></LinearRing></outerBoundaryIs>
+</Polygon>
+</Placemark>
+
+<Style id="Path">
+<LineStyle><color>FFFFFFFF</color><width>3</width></LineStyle>
+<PolyStyle><color>00000000</color></PolyStyle>
+</Style>
+<Placemark><name>Region 1</name>
+<description>minlevel = 5, maxlevel = 5
+  t1 = 0, t2 = 1e+10
+  x1 = -111.647, x2 = -111.586
+  y1 = 43.8966, y2 = 43.9373
+
+Level 5 resolution:  
+dy = 0 deg, 0 min, 0.571385 sec 
+= 17.6177 meters
+</description>
+<styleUrl>#Path</styleUrl>
+<Polygon>
+<tessellate>1</tessellate>
+<altitudeMode>clampToGround</altitudeMode>
+<outerBoundaryIs><LinearRing><coordinates>
+
+-111.6471,43.8966,0.0000
+-111.5858,43.8966,0.0000
+-111.5858,43.9373,0.0000
+-111.6471,43.9373,0.0000
+-111.6471,43.8966,0.0000
+
+</coordinates></LinearRing></outerBoundaryIs>
+</Polygon>
+</Placemark>
+
+</Document>
+</kml>
