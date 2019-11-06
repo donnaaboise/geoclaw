@@ -71,7 +71,7 @@ def setplot(plotdata):
 
     # Use computational coordinates for plotting
     plotfigure.kml_use_figure_limits = True
-    plotfigure.kml_tile_images = True    # Tile images for faster loading.  Requires GDAL [False]
+    plotfigure.kml_tile_images = False    # Tile images for faster loading.  Requires GDAL [False]
 
 
     # --------------------------------------------------

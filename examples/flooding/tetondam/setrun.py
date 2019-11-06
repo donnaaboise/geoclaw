@@ -63,15 +63,15 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # Time stepping
-    initial_dt = 100  # Initial time step
-    fixed_dt = True   # Take constant time step
+    initial_dt = 1  # Initial time step
+    fixed_dt = False   # Take constant time step
 
     # Output files
     output_style = 1   
 
     if output_style == 1:
         # Total number of frames will be frames_per_minute*60*n_hours
-        n_hours = 3               # Total number of hours in simulation        
+        n_hours = 0.2               # Total number of hours in simulation        
         frames_per_minute = 1.0   # Frames every 60 seconds
 
     if output_style == 2:
@@ -79,7 +79,7 @@ def setrun(claw_pkg='geoclaw'):
 
     if output_style == 3:
         step_interval = 10   # Create output file every 10 steps
-        total_steps = 200    # ... for a total of 200 steps (so 20 output files total)
+        total_steps = 500    # ... for a total of 200 steps (so 20 output files total)
 
 
     # ---------------------------------------------------------------------------------
