@@ -63,34 +63,41 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # Time stepping
-    initial_dt = 100  # Initial time step
-    fixed_dt = True   # Take constant time step
+    initial_dt = 1  # Initial time step
+    fixed_dt = False   # Take constant time step
 
     # Output files
     output_style = 1   
 
     if output_style == 1:
         # Total number of frames will be frames_per_minute*60*n_hours
-        n_hours = 3               # Total number of hours in simulation        
-        frames_per_minute = 1.0   # Frames every 60 seconds
+        n_hours = 24.0              # Total number of hours in simulation        
+        frames_per_minute = 60.0/60.0   # Frames every 60 seconds
 
     if output_style == 2:
         output_times = [1,2,3]    # Specify exact times to output files
 
     if output_style == 3:
         step_interval = 10   # Create output file every 10 steps
-        total_steps = 200    # ... for a total of 200 steps (so 20 output files total)
+        total_steps = 500    # ... for a total of 200 steps (so 20 output files total)
 
 
     # ---------------------------------------------------------------------------------
     # Grid 
-    # Probably don't need to change anything here unless we change the topo file
+    # Changes when the topo file changes 
     # ---------------------------------------------------------------------------------
-    # Topo info (TetonDamLatLong.topo)
+    # Topo info (TetonDamLatLong.topo) decimal degrees, no minutes
     m_topo = 4180
     n_topo = 1464
     xllcorner = -112.390734400000
     yllcorner = 43.581746970335
+    cellsize = 0.000277729665
+
+    #Topo info (TetonLarge.Topo) decimal degrees, no minutes
+    m_topo = 3996
+    n_topo = 2988
+    xllcorner = -112.360138888891
+    yllcorner = 43.170138888889
     cellsize = 0.000277729665
 
     # Computational coarse grid
@@ -129,7 +136,7 @@ def setrun(claw_pkg='geoclaw'):
     dim_topo = ur_topo - ll_topo
     mdpt_topo = ll_topo + 0.5*(ur_topo-ll_topo)
 
-    dim_comp = 0.95*dim_topo   # Shrink domain inside of given bathymetry.
+    dim_comp = 0.99*dim_topo   # Shrink domain inside of given bathymetry.
 
     clawdata.lower[0] = mdpt_topo[0] - dim_comp[0]/2.0
     clawdata.upper[0] = mdpt_topo[0] + dim_comp[0]/2.0
@@ -185,10 +192,11 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.output_style = output_style
 
     if clawdata.output_style == 1:
-        # Output nout frames at equally spaced times up to tfinal:
+        # Output nout frames at equally spaced times up to tfinal: number of output frames
         clawdata.num_output_times = int(frames_per_minute*60*n_hours)  # Plot every 10 seconds
-        clawdata.tfinal = 60*60*n_hours
+        clawdata.tfinal = 60*60*n_hours #total number of seconds
         clawdata.output_t0 = True  # output at initial (or restart) time?
+        print(clawdata.tfinal)
 
     elif clawdata.output_style == 2:
         # Specify a list of output times.
@@ -204,8 +212,8 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.output_format = 'ascii'      # 'ascii' or 'netcdf'
 
     clawdata.output_q_components = 'all'   # could be list such as [True,True]
-    clawdata.output_aux_components = 'none'  # could be list
-    clawdata.output_aux_onlyonce = True    # output aux arrays only at t0
+    clawdata.output_aux_components = 'none'  # eta=h+B is in q
+    clawdata.output_aux_onlyonce = True    # output aux arrays only at t0 (not in each frame)
 
 
 
@@ -331,10 +339,10 @@ def setrun(claw_pkg='geoclaw'):
     # -----------------------------------------------
     amrdata = rundata.amrdata
 
-    amrdata.amr_levels_max = maxlevel    # Set to 3 for best results
-    amrdata.refinement_ratios_x = ratios_x
-    amrdata.refinement_ratios_y = ratios_y
-    amrdata.refinement_ratios_t = ratios_t
+    amrdata.amr_levels_max = maxlevel    # Set to 3 for best results (6 for tsunami research)
+    amrdata.refinement_ratios_x = ratios_x # [3,5,4,5,6]
+    amrdata.refinement_ratios_y = ratios_y # [3,5,4,5,6]
+    amrdata.refinement_ratios_t = ratios_t # [1,1,1,1,1]
     # rundata.tol = -1
     # rundata.tolsp = 0.001
 
@@ -342,18 +350,47 @@ def setrun(claw_pkg='geoclaw'):
     # This must be a list of length maux, each element of which is one of:
     #   'center',  'capacity', 'xleft', or 'yleft'  (see documentation).
 
-    amrdata.aux_type = ['center','capacity','yleft']
+    amrdata.aux_type = ['center','capacity','yleft','center']
 
 
     # Flag using refinement routine flag2refine rather than richardson error
     amrdata.flag_richardson = False    # use Richardson?
     amrdata.flag2refine = True
+
+    # steps to take on each level (L) between regriddings of level L+1:
     amrdata.regrid_interval = 3
+
+    # width of buffer zone around flagged points: 
     amrdata.regrid_buffer_width  = 2
+
+    # clustering alg. cutoff for (# flagged pts) / (total # of cells refined)
     amrdata.clustering_cutoff = 0.700000
+
+    # print info about each regridding up to this level:
     amrdata.verbosity_regrid = 0
 
-    # -----------------------------------------------
+    # because developing and benchmarking this for TetonDam
+    # Toggle debugging print statements :
+    amrdata.dprint = False # print domain flags
+    amrdata.eprint = False # print err est flags
+    amrdata.edebug = False # even more err est flags
+    amrdata.gprint = False # grid bisection/clustering
+    amrdata.nprint = False # proper nestling output
+    amrdata.pprint = False # projection of the tagged points
+    amrdata.rprint = False # print regridding summary
+    amrdata.sprint = False # space/memory output
+    amrdata.tprint = True # time step reporting each level
+    amrdata.uprint = False # update/upbnd reporting
+
+    # More AMR parameters can be set -- see the defults in pyclaw/data.py 
+
+  # -----------------------------------------------
+
+    # Regions: 
+
+  # -----------------------------------------------
+  
+
     # INL Regions
     #   Regions to be refined :
     #    (1) Refine initial reservoir to level 4
@@ -389,72 +426,42 @@ def setrun(claw_pkg='geoclaw'):
 
     # -------------------------------------------------------
     # INL Gauges
-    #     -- Set gauges at Teton City and Wilford
-    #     -- Remaining gauges build border around power plant
+    #     -- Set gauges at Teton Dam break area, Teton Mouth, Sugar City (1&2), Blackfoot, Rexburg, and Wilford
+    #    
     #
     # For gauges append lines of the form  [gaugeno, x, y, t1, t2]
     # -------------------------------------------------------
+    # SPERO: when coding gauges, make sure to be in degrees when retrieving that data
 
-    last_val = 0   # Not sure what to put here
+    #Wilford_Gauge_Spero
+    xc,yc = [-111.672, 43.9144]
+    rundata.gaugedata.gauges.append([0,xc,yc,0.,clawdata.tfinal])  # Wilford Gauge Spero
 
-    # Wilford
-    xc,yc = [-111.672222,43.914444]
-    rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Wilford
+    #Sugar_City_1_Gauge_Spero
+    xc,yc = [-111.760043, 43.863324]
+    rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Sugar City Gauge 1 Spero
 
-    # Teton City
-    xc,yc = [-111.669167,43.887778]
-    rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Teton City
-
-    # Power plant, with border constructed of 4*m gauges
-    # Start at SW corner; build gauges in counter-clockwise order in a
-    # square around the region [xll,xur].
-
-    m = 2  # Gauge spacing along one edge (m=4 --> edge divided into four sections)
-    gauge_counter = 100
-
-    # South West corner of power plant
-    xll = [-111.623926, 43.913661]  # From email
-
-    # North East corner of power plant
-    xur = [-111.620150, 43.916382]  # from email
-
-    s = np.linspace(0,1.,m+1)
-    for i in range(0,m):
-        x = xll[0] + (xur[0] - xll[0])*s[i]
-        rundata.gaugedata.gauges.append([gauge_counter,x,xll[1],0.,clawdata.tfinal])
-        gauge_counter = gauge_counter + 1
-
-    for i in range(0,m):
-        y = xll[1] + (xur[1] - xll[1])*s[i]
-        rundata.gaugedata.gauges.append([gauge_counter,xur[0],y,0.,clawdata.tfinal])
-        gauge_counter = gauge_counter + 1
-
-    for i in range(0,m):
-        x = xur[0] + (xll[0] - xur[0])*s[i]
-        rundata.gaugedata.gauges.append([gauge_counter,x,xur[1],0.,clawdata.tfinal])
-        gauge_counter = gauge_counter + 1
-
-    for i in range(0,m):
-        y = xur[1] + (xll[1] - xur[1])*s[i]
-        rundata.gaugedata.gauges.append([gauge_counter,xll[0],y,0.,clawdata.tfinal])
-        gauge_counter = gauge_counter + 1
-
-    # -------------------------------------------------------
-    # For developers
-    #    -- Toggle debugging print statements:
-    # -------------------------------------------------------
-    amrdata.dprint = False      # print domain flags
-    amrdata.eprint = False      # print err est flags
-    amrdata.edebug = False      # even more err est flags
-    amrdata.gprint = False      # grid bisection/clustering
-    amrdata.nprint = False      # proper nesting output
-    amrdata.pprint = False      # proj. of tagged points
-    amrdata.rprint = False      # print regridding summary
-    amrdata.sprint = False      # space/memory output
-    amrdata.tprint = True      # time step reporting each level
-    amrdata.uprint = False      # update/upbnd reporting
-
-
+    #Sugar_City_2_Gauge_Spero
+    xc,yc = [-111.743358, 43.873840]
+    rundata.gaugedata.gauges.append([6,xc,yc,0.,clawdata.tfinal])  # Sugar City Gauge 2 Spero
+   
+    #Rexburg_Gauge_Spero
+    xc,yc = [-111.792295, 43.823048] 
+    rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Rexburg Gauge Spero
+    
+    #Teton_Canyon_Spero
+    xc,yc = [-111.593965, 43.934059] 
+    rundata.gaugedata.gauges.append([3,xc,yc,0.,clawdata.tfinal])  # Mid Teton Canyon Spero
+    
+    #Teton_Canyon_Mouth_Spero
+    xc,yc = [-111.66637, 43.933847] 
+    rundata.gaugedata.gauges.append([4,xc,yc,0.,clawdata.tfinal])  # Teton Canyon Mouth Spero
+    
+    # Blackfoot Gauge Spero (potentially because right on the border)
+    xc,yc = [-112.340703, 43.187585] 
+    rundata.gaugedata.gauges.append([5,xc,yc,0.,clawdata.tfinal])  # Blackfoot Gauge Spero
+   
+   
     return rundata
     # end of function setrun
     # ----------------------
@@ -487,7 +494,7 @@ def setgeo(rundata):
     geo_data.sea_level = 0.0
     geo_data.dry_tolerance = 1.e-3
     geo_data.friction_forcing = True
-    geo_data.manning_coefficient = 0.025
+    geo_data.manning_coefficient = 0.025 # need to make variable manning_coefficient
     geo_data.friction_depth = 1.e6
 
     # Refinement data
@@ -506,13 +513,17 @@ def setgeo(rundata):
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLargeLowRes.topo'])
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamSmallHiRes.topo'])
 
-    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLatLong.topo'])
+    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonDamLatLong.topo'])
+    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonLarge.topo'])
 
 
     # == setdtopo.data values ==
     topo_data = rundata.topo_data
     # for moving topography, append lines of the form :   (<= 1 allowed for now!)
     #   [topotype, minlevel,maxlevel,fname]
+    dtopo_data = rundata.dtopo_data
+
+    # is there something else that I will need to change if ^^^ ?
 
     # == setqinit.data values ==
     rundata.qinit_data.qinit_type = 0
@@ -536,3 +547,5 @@ if __name__ == '__main__':
     import sys
     rundata = setrun(*sys.argv[1:])
     rundata.write()
+
+
