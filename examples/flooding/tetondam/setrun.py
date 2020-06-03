@@ -71,7 +71,10 @@ def setrun(claw_pkg='geoclaw'):
 
     if output_style == 1:
         # Total number of frames will be frames_per_minute*60*n_hours
+
         n_hours = 24              # Total number of hours in simulation        
+        
+
         frames_per_minute = 60.0/60.0   # Frames every 60 seconds
 
     if output_style == 2:
@@ -425,6 +428,7 @@ def setrun(claw_pkg='geoclaw'):
     regions.append([1,4,0, 1e10, clawdata.lower[0],clawdata.upper[0],clawdata.lower[1],clawdata.upper[1]])
 
     # -------------------------------------------------------
+
     #
     # For gauges append lines of the form  [gaugeno, x, y, t1, t2]
     # -------------------------------------------------------
@@ -473,6 +477,32 @@ def setrun(claw_pkg='geoclaw'):
     #Idaho Falls Gauge Spero
     xc,yc = [-112.17208, 43.32496] 
     rundata.gaugedata.gauges.append([9,xc,yc,0.,clawdata.tfinal])  # Idaho Falls Gauge Spero    
+    rundata.gaugedata.gauges.append([0,xc,yc,0.,clawdata.tfinal])  # Wilford Gauge Spero
+
+    #Sugar_City_1_Gauge_Spero
+    xc,yc = [-111.760043, 43.863324]
+    rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Sugar City Gauge 1 Spero
+
+    #Sugar_City_2_Gauge_Spero
+    xc,yc = [-111.743358, 43.873840]
+    rundata.gaugedata.gauges.append([6,xc,yc,0.,clawdata.tfinal])  # Sugar City Gauge 2 Spero
+   
+    #Rexburg_Gauge_Spero
+    xc,yc = [-111.792295, 43.823048] 
+    rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Rexburg Gauge Spero
+    
+    #Teton_Canyon_Spero
+    xc,yc = [-111.593965, 43.934059] 
+    rundata.gaugedata.gauges.append([3,xc,yc,0.,clawdata.tfinal])  # Mid Teton Canyon Spero
+    
+    #Teton_Canyon_Mouth_Spero
+    xc,yc = [-111.66637, 43.933847] 
+    rundata.gaugedata.gauges.append([4,xc,yc,0.,clawdata.tfinal])  # Teton Canyon Mouth Spero
+    
+    # Blackfoot Gauge Spero (potentially because right on the border)
+    xc,yc = [-112.340703, 43.187585] 
+    rundata.gaugedata.gauges.append([5,xc,yc,0.,clawdata.tfinal])  # Blackfoot Gauge Spero
+   
    
     return rundata
     # end of function setrun
