@@ -16,13 +16,13 @@ CLAW_PKG = geoclaw                  # Clawpack package to use
 EXE = xgeoclaw                 # Executable to create
 SETRUN_FILE = setrun.py        # File containing function to make data
 OUTDIR = _output               # Directory for output
-SETPLOT_FILE = setplot_kml.py      # File containing function to set plots
+SETPLOT_FILE = setplot.py      # File containing function to set plots, edited 4/10
 PLOTDIR = _plots               # Directory for plots
 
 # Environment variable FC should be set to fortran compiler, e.g. gfortran
 
 # Compiler flags can be specified here or set as an environment variable
-FFLAGS ?= -O2 -fbounds-check -ffpe-trap=invalid,overflow,zero
+FFLAGS ?= -fopenmp -O2 -fbounds-check -ffpe-trap=invalid,overflow,zero
 # FFLAGS ?= -O0 -g -fbounds-check -ffpe-trap=invalid,overflow,zero
 
 
