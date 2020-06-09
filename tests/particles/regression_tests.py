@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-r"""Bowl-Slosh regression test for GeoClaw
+r"""Particles regression test for GeoClaw
 
 To create new regression data use
     `python regression_tests.py True`
@@ -10,6 +10,7 @@ from __future__ import absolute_import
 import os
 import sys
 import unittest
+import shutil
 
 import numpy
 
@@ -17,33 +18,26 @@ import clawpack.geoclaw.test as test
 import clawpack.geoclaw.topotools as topotools
 
 
-class BowlSloshTest(test.GeoClawRegressionTest):
+class ParticlesTest(test.GeoClawRegressionTest):
 
-    r"""Bowl-Slosh regression test for GeoClaw"""
+    r"""Particles regression test for GeoClaw"""
 
     def setUp(self):
 
-        super(BowlSloshTest, self).setUp()
+        super(ParticlesTest, self).setUp()
+        start_dir = os.getcwd()
 
         # Make topography
-        a = 1.
-        h0 = 0.1
-        topo_func = lambda x,y: h0 * (x**2 + y**2) / a**2 - h0
 
-        topo = topotools.Topography(topo_func=topo_func)
-        topo.topo_type = 2
-        topo.x = numpy.linspace(-2.0, 2.0, 200)
-        topo.y = numpy.linspace(-2.0, 2.0, 200)
-        topo.write(os.path.join(self.temp_path, "bowl.topotype2"), \
-                topo_type=2, Z_format="%22.15e")
-
-        # fgmax_grids.data created by setrun.py now contains all info
-        #from . import make_fgmax_grid 
-        #make_fgmax_grid.make_fgmax_grid1(self.temp_path)
+        shutil.copy(os.path.join(self.test_path, "maketopo.py"),
+                                 self.temp_path)
+        os.chdir(self.temp_path)
+        os.system('python maketopo.py')
+        os.chdir(start_dir)
 
 
     def runTest(self, save=False, indices=(2, 3)):
-        r"""Test bowl-slosh example
+        r"""Test particles example
 
         Note that this stub really only runs the code and performs no tests.
 
@@ -57,8 +51,8 @@ class BowlSloshTest(test.GeoClawRegressionTest):
         self.run_code()
 
         # Perform tests
-        self.check_gauges(save=save, gauge_id=1, indices=(2, 3))
-        self.check_fgmax(save=save)
+        self.check_gauges(save=save, gauge_id=1, indices=(1, 2))
+        self.check_gauges(save=save, gauge_id=2, indices=(1, 2))
         self.success = True
 
 
@@ -66,7 +60,7 @@ if __name__=="__main__":
     if len(sys.argv) > 1:
         if bool(sys.argv[1]):
             # Fake the setup and save out output
-            test = BowlSloshTest()
+            test = ParticlesTest()
             try:
                 test.setUp()
                 test.runTest(save=True)

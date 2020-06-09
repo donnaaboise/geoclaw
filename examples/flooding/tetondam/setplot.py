@@ -1,4 +1,3 @@
-
 """
 Set up the plot figures, axes, and items to be done for each frame.
 
@@ -7,18 +6,19 @@ function setplot is called to set the plot parameters.
 
 """
 """
-Set up the plot figures, axes, andd items to be done for each frame.
+Set up the plot figures, axes, and items to be done for each frame.
 
 this module is imported by the plotting routines and then the
 fucntion setplot is called to set the plot parameters.
 
 """
-
-import numpy as np
-import matplotlib.pyplot as plt
+import sys                              #sys - Python system-specific parameters and functions, this compiles Python arguments to be used
+import numpy as np                      #import numpy as np is an alias for the namespace that will be created
+import matplotlib.pyplot as plt         #collection of command style functions that makes the code work like MATLAB when creating figures
+from clawpack.geoclaw import topotools  #tools facilitate creating and manipulating topo/bathymetry file inputs 
 
 #--------------------------
-def setplot(plotdata):
+def setplot(plotdata):                  #defining setplot command (indenting by Python)
 #--------------------------
 
     """
@@ -29,117 +29,78 @@ def setplot(plotdata):
     """
 
 
-    from clawpack.visclaw import colormaps, geoplot
-    from numpy import linspace
+    from clawpack.visclaw import colormaps, geoplot #colormaps found in visclaw module geoplot
+    from numpy import linspace #tool in Python for creating numeric sequences (evenly spaced numbered structures)
 
     plotdata.clearfigures()  # clear any old figures,axes,items data
 
+    plotdata.verbose = False #always false 
 
-    #to plot gauge locations on pcolor or contour, use this as
-    #after axis function:
-
-
-import numpy
-#a = 1.
-#sigma = 0.5
-#h0 = 150
-#grav = 9.81
-
-#-------------------
-def setplot(plotdata):
-#--------------------
-
-
-    """
-    specify what is to be plotted at each frame
-    Input: plotdata, an instance of pyclaw.plotters.data.ClawPlotData.
-    Outptu: a modified version of plotdata.
-
-    """
-
-
-
-    from clawpack.visclaw import colormaps, geoplot
-
-    plotdata.clearfigures()
-
-    def set_drytol(current_data):
-        # The drytol parameter is used in masking land and water and
-        # affects what color map is used for cells with small water depth h.
-        # The cell will be plotted as dry if h < drytol.
-        # The best value to use often depends on the application and can
-        # be set here (measured in meters):
-        current_data.user["drytol"] = 1.e-3
-
-    plotdata.beforeframe = set_drytol
-
+   
     #-----------------------------------------
-    # Figure for pcolor plot
+    #  Set several parameters for the Teton Dam Modeling
     #-----------------------------------------
-    plotfigure = plotdata.new_plotfigure(name='Teton Dam', figno=0)
+    plotdata.kml_name = "Teton Dam"
+    plotdata.kml_starttime = [1976,6,5,17,55,0]  # Date/time of event in UTC [None]
+    plotdata.kml_tz_offset = 0    # Time zone offset (in hours) of event. [None]
 
-    # Set up for axes in this figure:
-    plotaxes = plotfigure.new_plotaxes('pcolor')
-    plotaxes.title = 'Surface'
-    plotaxes.scaled = True
+    plotdata.kml_index_fname = "TetonDam"  # name for .kmz and .kml files ["_GoogleEarth"]
 
+    # Set to a URL where KMZ file will be published.
+    # plotdata.kml_publish = 'http://math.boisestate.edu/~calhoun/visclaw/GoogleEarth/kmz'
 
-    # Cells used in setrun.py
-    num_cells = [54,19]
-    lower = [-112.36171859324912, 43.591904932832371]
-    upper = [-111.25911793671588, 43.977907507732617]
-    xll = [-111.64, 43.913661]
-    xur = [-111.60, 43.92]
+    #-----------------------------------------------------------
+    # Figure for KML files
+    #----------------------------------------------------------
+    plotfigure = plotdata.new_plotfigure(name='Teton Dam',figno=1) #specifying specific desired plots
+    plotfigure.show = True #showing what we plot (always on)
 
-    xll = [lower[0],lower[1]]
-    xur = [upper[0],upper[1]]
+    plotfigure.use_for_kml = True #output as KML required true to visualize GeoClaw in Google Earth
+    plotfigure.kml_use_for_initial_view = True #no extra editing required 
 
+    # Latlong box used for GoogleEarth
+    plotfigure.kml_xlimits = [-112.36171859324912, -111.25911793671588] #coordinates of TetonLarge.topo
+    plotfigure.kml_ylimits = [43.591904932832371, 43.977907507732617] #coordinates of TetonLarge.topo
 
-    dark_blue = [0.2,0.2,0.7];
-    light_blue = [0.7,0.7,1.0];
-    flooding_colormap = colormaps.make_colormap({ -1.0:light_blue,
-                                                 1.0:dark_blue})
+    # Use computational coordinates for plotting
+    plotfigure.kml_use_figure_limits = True #use the xlimits and ylimits above
+    plotfigure.kml_figsize = [54,19] #width 54 inches, height 19 inches
+    plotfigure.kml_dpi = 32 #dots per inch, 32 pixels specified
+
+    # --------------------------------------------------
+    plotfigure.kml_tile_images = False # loading / python w/ gdal installation
+
+    # Color axis : transparency below 0.1*(cmax-cmin)
+    cmin = 0 #color axis MATLAB scaling for water color
+    cmax = 5 #color axis MATLAB scaling for water color
+    cmap = geoplot.googleearth_flooding  # transparent --> light blue --> dark blue
+    #cmin, cmax = caxis #added 5.20.2020
+
     # Water
+    plotaxes = plotfigure.new_plotaxes('kml')
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-    plotitem.plot_var = geoplot.depth
-    plotitem.pcolor_cmap = flooding_colormap
-    plotitem.pcolor_cmin = 0
-    plotitem.pcolor_cmax = 100
-    plotitem.add_colorbar = True
-    plotitem.amr_celledges_show = [0,0,0]
-    plotitem.patchedges_show = False
+    plotitem.plot_var = geoplot.depth   # Plot height field h.
+    plotitem.pcolor_cmap = geoplot.googleearth_flooding
+    plotitem.pcolor_cmin = cmin #defining the minimum color using color axis
+    plotitem.pcolor_cmax = cmax #defining the maximum color using color axis
+
+    def kml_colorbar(filename): #file name defined above
+        geoplot.kml_build_colorbar(filename,cmap,cmin,cmax) #building the color bar
+
+    plotfigure.kml_colorbar = kml_colorbar #colorbar will appear when shown on Google Earth
 
     # Land
-    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-    plotitem.plot_var = geoplot.land
-    plotitem.pcolor_cmap = geoplot.land_colors
-    plotitem.pcolor_cmin = 1400
-    plotitem.pcolor_cmax = 2800
-    plotitem.add_colorbar = True
-    plotitem.amr_celledges_show = [0,0,0]
-    plotitem.patchedges_show = 0
-    plotaxes.xlimits = [lower[0], upper[0]]
-    plotaxes.ylimits = [lower[1], upper[1]]
+    #plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    #plotitem.plot_var = geoplot.land
+    #plotitem.pcolor_cmap = geoplot.land_colors
+    #plotitem.pcolor_cmin = 1400
+    #plotitem.pcolor_cmax = 2800
+    #plotitem.add_colorbar = True
+    #plotitem.amr_celledges_show = [0,0,0] #this is a comment
+    #plotitem.patchedges_show = 0
+    #plotaxes.xlimits = [lower[1], upper[5]] #this does not work??
+    #plotaxes.ylimits = [lower[1], upper[1]]
 
-    # Add contour lines of bathymetry:
-    plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
-    plotitem.plot_var = geoplot.topo
-    from numpy import arange, linspace
-    plotitem.contour_levels = linspace(0,900,40)
-    plotitem.amr_contour_colors = ['k']  # color on each level
-    plotitem.kwargs = {'linestyles':'solid'}
-    plotitem.amr_contour_show = [1]
-    plotitem.celledges_show = 0
-    plotitem.patchedges_show = 0
-    plotitem.show = True
-
-
-    def addgauges(current_data):
-        from clawpack.visclaw import gaugetools
-        gaugetools.plot_gauge_locations(current_data.plotdata, \
-                                        gaugenos='5', format_string='ko', add_labels=True)
-
-    plotaxes.afteraxes = addgauges
 
     #-----------------------------------------
     # Figures for gauges
@@ -147,67 +108,89 @@ def setplot(plotdata):
     plotfigure = plotdata.new_plotfigure(name='Flood height', figno=300, \
                     type='each_gauge')
     plotfigure.clf_each_gauge = True
-
+    
     # Set up for axes in this figure:
-    plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = 'auto'
-    plotaxes.ylimits = 'auto'
+    plotaxes = plotfigure.new_plotaxes('pcolor')
+    plotaxes.title = 'Surface'
+    plotaxes.scaled = False # look into this
+    plotaxes.ylimits = [0,20] #20 m max (belongs to the blue section)
 
     # Plot surface as blue curve:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
-    plotitem.plot_var = 3
-    plotitem.plotstyle = 'b-'
+    plotitem.plot_var = 0 #plot the water
+    plotitem.plotstyle = 'b-' #changing line color
+    plotitem.show = True
 
     # Plot topo as green curve:
-    plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
-    plotitem.show = True
+    # plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
+    # plotitem.show = False
 
     def gaugetopo(current_data):
         q = current_data.q
         h = q[0,:]
         eta = q[3,:]
-        topo = eta - h
+        topo = eta - h # this will have it begin at 0, rather than above the topo
         return topo
 
-    plotitem.plot_var = gaugetopo
-    plotitem.plotstyle = 'g-'
-
+    # plotitem.plot_var = gaugetopo
+    # plotitem.plotstyle = 'g-'
 
     def afterframe(current_data):
-        from pylab import plot, legend, xticks, floor, axis, xlabel,title
+        from pylab import plot, legend, xticks, floor, axis, xlabel, ylabel, title
         t = current_data.t
         gaugeno = current_data.gaugeno
+        #import pdb
+        #pdb.set_trace()
         if gaugeno == 1:
-            title('Wilford')
+            title('Teton Canyon')
         elif gaugeno == 2:
-            title('Teton City')
+            title('Teton Canyon Mouth')
+        elif gaugeno == 3:
+            title('Wilford')
+        elif gaugeno == 4:
+            title('Teton Town')
+        elif gaugeno == 5:
+            title('Sugar City')
+        elif gaugeno == 6:
+            title('Roberts')
+        elif gaugeno == 7:
+            title('Rexburg')
+        #elif gaugeno == 8:
+            #title('Teton City','-k')
+        elif gaugeno == 9:
+            title('Idaho Falls')
+        elif gaugeno == 10:
+            title('Blackfoot')
+
+        xlabel('Time (hours)')
+        ylabel('Inundation Level (feet)') #does not like
+        #legend()
+        #print("here") ~you can use this to check here in the code by uncommenting
 
         # plot(t, 0*t, 'k')
         n = int(floor(t.max()/3600.) + 2)
         xticks([3600*i for i in range(n)], ['%i' % i for i in range(n)])
-        xlabel('time (hours)')
 
     plotaxes.afteraxes = afterframe
-
-
+    
     #-----------------------------------------
 
     # Parameters used only when creating html and/or latex hardcopy
     # e.g., via pyclaw.plotters.frametools.printframes:
 
-    plotdata.parallel = True
+    plotdata.parallel = True                 #
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
-    plotdata.print_framenos = range(0,10)          # list of frames to print
-    plotdata.print_gaugenos = [100]            # list of gauges to print
+    plotdata.print_framenos = range(0,20)        # list of frames to print
+    plotdata.print_gaugenos = 'all'           # list of gauges to print, linked to fignos above
     plotdata.print_fignos = 'all'            # list of figures to print
-    plotdata.html = True                     # create html files of plots?
-    plotdata.html_movie = True                     # create html files of plots?
+    plotdata.html = False                     # create html files of plots?
+    plotdata.html_movie = False                  # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
     plotdata.latex = False                    # create latex file of plots?
     plotdata.latex_figsperline = 2           # layout of plots
     plotdata.latex_framesperline = 1         # layout of plots
     plotdata.latex_makepdf = False           # also run pdflatex?
-    plotdata.kml = False
+    plotdata.kml = True
 
     return plotdata

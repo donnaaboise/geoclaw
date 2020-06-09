@@ -107,62 +107,7 @@ def setplot(plotdata):
     plotfigure.kml_colorbar = kml_colorbar
 
 
-    #-----------------------------------------------------------
-    # Figure for KML files (zoomed view on region)
-    #----------------------------------------------------------
-    plotfigure = plotdata.new_plotfigure(name='Power Plant (zoom)',figno=2)
-    plotfigure.show = True
-
-    plotfigure.use_for_kml = True
-    plotfigure.kml_use_for_initial_view = False
-
-    # Latlong box used for GoogleEarth
-
-    import tools
-    region_lower, region_upper, figsize = tools.region_coords(xll,xur,
-                                                              num_cells,
-                                                              lower,
-                                                              upper)
-
-    # # Get degrees per finest level :
-    # dx_coarse = (upper[0]-lower[0])/num_cells[0]
-    # dy_coarse = (upper[1]-lower[1])/num_cells[1]
-    #
-    # # Zoom region
-    # mx_xlow = np.floor((xll[0] - lower[0])/dx_coarse).astype(int)
-    # my_ylow = np.floor((xll[1] - lower[1])/dy_coarse).astype(int)
-    # mx_zoom = np.ceil((xur[0] - xll[0])/dx_coarse).astype(int)
-    # my_zoom = np.ceil((xur[1] - xll[1])/dy_coarse).astype(int)
-    # xlow = lower[0] + mx_xlow*dx_coarse
-    # ylow = lower[1] + my_ylow*dy_coarse
-
-    plotfigure.kml_xlimits = [region_lower[0],region_upper[0]]
-    plotfigure.kml_ylimits = [region_lower[1], region_upper[1]]
-
-    # Use computational coordinates for plotting
-    plotfigure.kml_use_figure_limits = True
-
-    # --------------------------------------------------
-    plotfigure.kml_figsize = figsize*8
-    plotfigure.kml_dpi = 4*4
-
-    # --------------------------------------------------
-
-    plotfigure.kml_tile_images = True    # Tile images for faster loading.  Requires GDAL [False]
-
-    # Color axis : transparency below 0.1*(cmax-cmin)
-    cmin = 0
-    cmax = 5
-    cmap = geoplot.googleearth_flooding  # transparent --> light blue --> dark blue
-
-    # Water
-    plotaxes = plotfigure.new_plotaxes('kml')
-    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-    plotitem.plot_var = geoplot.depth   # Plot height field h.
-    plotitem.pcolor_cmap = geoplot.googleearth_flooding
-    plotitem.pcolor_cmin = cmin
-    plotitem.pcolor_cmax = cmax
-
+    
     #-----------------------------------------
     # Figures for gauges
     #-----------------------------------------
@@ -177,7 +122,7 @@ def setplot(plotdata):
 
     # Plot surface as blue curve:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
-    plotitem.plot_var = 3  # eta?
+    plotitem.plot_var = 0  # set to zero because zero equals height
     plotitem.plotstyle = 'b-'
 
     # Plot topo as green curve:
@@ -188,8 +133,9 @@ def setplot(plotdata):
         q = current_data.q
         h = q[0,:]
         eta = q[3,:]
-        topo = eta - h
-        return topo
+        topo = eta - h #gets topo information, h meaning height 
+        return 0*topo #changed 02/28/2020
+    
 
     plotitem.plot_var = gaugetopo
     plotitem.plotstyle = 'g-'
@@ -198,8 +144,9 @@ def setplot(plotdata):
         from pylab import plot, legend, xticks, floor, axis, xlabel,title
         t = current_data.t
         gaugeno = current_data.gaugeno
-        if gaugeno == 1:
+        if gaugeno == 1: 
             title('Wilford')
+            plot(t,0*t+5,label='Wilford') #if you think it was 5 meters and can be edited to match history
         elif gaugeno == 2:
             title('Teton City')
 
@@ -207,7 +154,7 @@ def setplot(plotdata):
         n = int(floor(t.max()/3600.) + 2)
         xticks([3600*i for i in range(n)], ['%i' % i for i in range(n)])
         xlabel('time (hours)')
-
+        plotaxes.ylimits = [0,25]
     plotaxes.afteraxes = afterframe
 
 

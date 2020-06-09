@@ -16,30 +16,39 @@ CLAW_PKG = geoclaw                  # Clawpack package to use
 EXE = xgeoclaw                 # Executable to create
 SETRUN_FILE = setrun.py        # File containing function to make data
 OUTDIR = _output               # Directory for output
-SETPLOT_FILE = setplot.py      # File containing function to set plots, edited 4/10
+SETPLOT_FILE = setplot.py      # File containing function to set plots
 PLOTDIR = _plots               # Directory for plots
 
 # Environment variable FC should be set to fortran compiler, e.g. gfortran
 
 # Compiler flags can be specified here or set as an environment variable
-FFLAGS ?= -fopenmp -O2 -fbounds-check -ffpe-trap=invalid,overflow,zero
-# FFLAGS ?= -O0 -g -fbounds-check -ffpe-trap=invalid,overflow,zero
+FFLAGS ?=
 
 
 # ---------------------------------
-# List of sources for this program:
+# package sources for this program:
 # ---------------------------------
 
 GEOLIB = $(CLAW)/geoclaw/src/2d/shallow
 include $(GEOLIB)/Makefile.geoclaw
 
+# ---------------------------------------
+# package sources specifically to exclude
+# (i.e. if a custom replacement source 
+#  under a different name is provided)
+# ---------------------------------------
+
 EXCLUDE_MODULES = \
 
 EXCLUDE_SOURCES = \
 
+# ----------------------------------------
+# List of custom sources for this program:
+# ----------------------------------------
+
+MODULES = \
 
 SOURCES = \
-  ./qinit.f90 \
   $(CLAW)/riemann/src/rpn2_geoclaw.f \
   $(CLAW)/riemann/src/rpt2_geoclaw.f \
   $(CLAW)/riemann/src/geoclaw_riemann_utils.f \
@@ -53,7 +62,8 @@ include $(CLAWMAKE)
 topo:
 	python maketopo.py
 
-all:
+all: 
 	$(MAKE) topo
 	$(MAKE) .plots
 	$(MAKE) .htmls
+
