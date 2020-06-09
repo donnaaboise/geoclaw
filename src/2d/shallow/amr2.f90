@@ -310,11 +310,11 @@ program amr2
     read(inunit,*) rstfile
 
     read(inunit,*) checkpt_style
-    if (checkpt_style == 0) then
-        ! Never checkpoint:
-        checkpt_interval = iinfinity
 
-    else if (abs(checkpt_style) == 2) then
+    ! default value unless set by checkpt_style==3:
+    checkpt_interval = iinfinity
+
+    if (abs(checkpt_style) == 2) then
         read(inunit,*) nchkpt
         allocate(tchk(nchkpt))
         read(inunit,*) (tchk(i), i=1,nchkpt)
@@ -329,6 +329,8 @@ program amr2
     ! ==========================================================================
     !  Refinement Control
     call opendatafile(inunit, amrfile)
+
+    read(inunit,*) max1d  ! max size of each grid patch
 
     read(inunit,*) mxnest
     if (mxnest <= 0) then
@@ -462,28 +464,37 @@ program amr2
 
         ! moved upt before restrt or won't properly initialize 
         call set_fgmax()   
+        
+        ! need these before set_gauges so num_out_vars set right for gauges
+        call set_geo()                    ! sets basic parameters g and coord system
+        call set_multilayer()             ! Set multilayer SWE parameters
+        
+        ! Set gauge output, note that restrt might reset x,y for lagrangian:
+        call set_gauges(rest, nvar, naux) 
+
         call restrt(nsteps,time,nvar,naux)
+
         nstart  = nsteps
         tstart_thisrun = time
         print *, ' '
         print *, 'Restarting from previous run'
         print *, '   at time = ',time
         print *, ' '
+
         ! Call user routine to set up problem parameters:
         call setprob()
 
         ! Non-user defined setup routine
-        call set_geo()                    ! sets basic parameters g and coord system
+        !call set_geo()                    ! sets basic parameters g and coord system
         call set_refinement()             ! sets refinement control parameters
         call read_dtopo_settings()        ! specifies file with dtopo from earthquake
         call read_topo_settings()         ! specifies topography (bathymetry) files
         call set_qinit()                  ! specifies file with dh if this used instead
         call set_fixed_grids()            ! Fixed grid settings
         call setup_variable_friction()    ! Variable friction parameter
-        call set_multilayer()             ! Set multilayer SWE parameters
+        !call set_multilayer()             ! Set multilayer SWE parameters
         call set_storm()                  ! Set storm parameters
         call set_regions()                ! Set refinement regions
-        call set_gauges(rest, nvar, naux) ! Set gauge output
         call read_adjoint_data()          ! Read adjoint solution
 
     else
