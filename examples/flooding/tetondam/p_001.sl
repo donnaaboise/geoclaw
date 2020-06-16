@@ -2,7 +2,7 @@
 
 #SBATCH -J xgeoclaw_001      # job name
 #SBATCH -o xgeoclaw_001.o%j  # output and error file name (%j expands to jobID)
-#SBATCH -n 4                 # total number of cpus requested. 28 per node.
+#SBATCH -n 8                 # total number of cpus requested. 28 per node.
 #SBATCH -N 1                 # number of nodes requested
 ##SBATCH --exclusive         # request exclusive usage of your nodes. (for low cpu, high memory jobs)
 #SBATCH -p defq              # queue (partition) -- defq, ipowerq, eduq, gpuq.

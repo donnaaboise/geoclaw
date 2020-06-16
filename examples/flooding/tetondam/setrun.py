@@ -72,7 +72,7 @@ def setrun(claw_pkg='geoclaw'):
     if output_style == 1:
         # Total number of frames will be frames_per_minute*60*n_hours
 
-        n_hours = 0.5              # Total number of hours in simulation        
+        n_hours = 24              # Total number of hours in simulation        
         
 
         frames_per_minute = 60.0/60.0   # Frames every 60 seconds
