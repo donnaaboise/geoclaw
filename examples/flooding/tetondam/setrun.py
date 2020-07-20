@@ -72,7 +72,7 @@ def setrun(claw_pkg='geoclaw'):
     if output_style == 1:
         # Total number of frames will be frames_per_minute*60*n_hours
 
-        n_hours = 24              # Total number of hours in simulation        
+        n_hours = 36              # Total number of hours in simulation        
         
 
         frames_per_minute = 0.20   # Frames every 60 seconds
@@ -434,78 +434,38 @@ def setrun(claw_pkg='geoclaw'):
     # -------------------------------------------------------
     # SPERO: when coding gauges, make sure to be in degrees when retrieving that data
 
+    #Teton_Canyon_Spero
+    xc,yc = [-111.593965, 43.934059] 
+    rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Mid Teton Canyon Spero
+
+    #Teton_Canyon_Mouth_Spero
+    xc,yc = [-111.66637, 43.933847] 
+    rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Teton Canyon Mouth Spero
+
     #Wilford_Gauge_Spero
     xc,yc = [-111.672, 43.9144]
     rundata.gaugedata.gauges.append([3,xc,yc,0.,clawdata.tfinal])  # Wilford Gauge Spero
 
-
-
-    #Sugar_City_1_Gauge_Spero
-    #xc,yc = [-111.760043, 43.863324]
-    #rundata.gaugedata.gauges.append([4,xc,yc,0.,clawdata.tfinal])  # Sugar City Gauge 1 Spero
-
     #Sugar_City_Gauge_Spero
     xc,yc = [-111.743358, 43.873840]
-    rundata.gaugedata.gauges.append([5,xc,yc,0.,clawdata.tfinal])  # Sugar City Gauge 2 Spero
+    rundata.gaugedata.gauges.append([4,xc,yc,0.,clawdata.tfinal])  # Sugar City Gauge 2 Spero
    
-    #Rexburg_Gauge_Spero
-    xc,yc = [-111.792295, 43.823048] 
-    rundata.gaugedata.gauges.append([7,xc,yc,0.,clawdata.tfinal])  # Rexburg Gauge Spero
-    
-    #Teton_Canyon_Spero
-    xc,yc = [-111.593965, 43.934059] 
-    rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Mid Teton Canyon Spero
-    
-    #Teton_Canyon_Mouth_Spero
-    xc,yc = [-111.66637, 43.933847] 
-    rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Teton Canyon Mouth Spero
-    
-    # Blackfoot Gauge Spero (potentially because right on the border)
-    xc,yc = [-112.340703, 43.187585] 
-    rundata.gaugedata.gauges.append([10,xc,yc,0.,clawdata.tfinal])  # Blackfoot Gauge Spero
-   
-    # Teton Town Gauge Spero 
-    xc,yc = [-111.4041, 43.5309] 
-    rundata.gaugedata.gauges.append([4,xc,yc,0.,clawdata.tfinal])  # teton town Gauge Spero
-
     #Roberts Gauge Spero
     xc,yc = [-112.126403, 43.7202] 
-    rundata.gaugedata.gauges.append([6,xc,yc,0.,clawdata.tfinal])  # Roberts Gauge Spero
+    rundata.gaugedata.gauges.append([5,xc,yc,0.,clawdata.tfinal])  # Roberts Gauge Spero   
     
-    #Teton City Gauge Spero
-    #xc,yc = [-111.1918, 43.7846] 
-    #rundata.gaugedata.gauges.append([8,xc,yc,0.,clawdata.tfinal])  # Teton City Gauge Spero
-
-    #Idaho Falls Gauge Spero
-    xc,yc = [-112.17208, 43.32496] 
-    rundata.gaugedata.gauges.append([9,xc,yc,0.,clawdata.tfinal])  # Idaho Falls Gauge Spero    
-    rundata.gaugedata.gauges.append([0,xc,yc,0.,clawdata.tfinal])  # Wilford Gauge Spero
-
-    #Sugar_City_1_Gauge_Spero
-    xc,yc = [-111.760043, 43.863324]
-    # rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Sugar City Gauge 1 Spero
-
-    #Sugar_City_2_Gauge_Spero
-    xc,yc = [-111.743358, 43.873840]
-    # rundata.gaugedata.gauges.append([6,xc,yc,0.,clawdata.tfinal])  # Sugar City Gauge 2 Spero
-   
     #Rexburg_Gauge_Spero
     xc,yc = [-111.792295, 43.823048] 
-    # rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Rexburg Gauge Spero
+    rundata.gaugedata.gauges.append([6,xc,yc,0.,clawdata.tfinal])  # Rexburg Gauge Spero
     
-    #Teton_Canyon_Spero
-    xc,yc = [-111.593965, 43.934059] 
-    # rundata.gaugedata.gauges.append([3,xc,yc,0.,clawdata.tfinal])  # Mid Teton Canyon Spero
-    
-    #Teton_Canyon_Mouth_Spero
-    xc,yc = [-111.66637, 43.933847] 
-    # rundata.gaugedata.gauges.append([4,xc,yc,0.,clawdata.tfinal])  # Teton Canyon Mouth Spero
-    
+    #Idaho Falls Gauge Spero
+    xc,yc = [-112.17208, 43.32496] 
+    rundata.gaugedata.gauges.append([7,xc,yc,0.,clawdata.tfinal])  # Idaho Falls Gauge Spero    
+
     # Blackfoot Gauge Spero (potentially because right on the border)
     xc,yc = [-112.340703, 43.187585] 
-    # rundata.gaugedata.gauges.append([5,xc,yc,0.,clawdata.tfinal])  # Blackfoot Gauge Spero
-   
-   
+    rundata.gaugedata.gauges.append([8,xc,yc,0.,clawdata.tfinal])  # Blackfoot Gauge Spero
+      
     return rundata
     # end of function setrun
     # ----------------------
@@ -532,13 +492,13 @@ def setgeo(rundata):
     geo_data.earth_radius = 6367.5e3
 
     # == Forcing Options
-    geo_data.coriolis_forcing = False
+    geo_data.coriolis_forcing = True #edited 7.20 to see impact (for fun)
 
     # == Algorithm and Initial Conditions ==
     geo_data.sea_level = 0.0
     geo_data.dry_tolerance = 1.e-3
     geo_data.friction_forcing = True
-    geo_data.manning_coefficient = 0.025 # need to make variable manning_coefficient
+    geo_data.manning_coefficient = 0.03 # need to make variable manning_coefficient
     geo_data.friction_depth = 1.e6
 
     # Refinement data
