@@ -6,8 +6,8 @@ hidegridlines(1:6);
 colormap(flipud(parula));
 colorbar;
 tol = -0.8;
-c1 = 1400;
-c2 = 1700;
+c1 = 0;
+c2 = 30;
 caxis([c1,c2]);
 
 set(gca,'zlim',[-10,1])
@@ -34,7 +34,7 @@ title(sprintf('Teton Dam (%d) : t = %.2f (%.2f,%.2f)',Frame,t,qmin,qmax),'fontsi
 
 NoQuery = 0;
 prt = false;
-MaxFrames = 26;
+MaxFrames = 1000;
 if (prt)
     filename = sprintf('tetondam_%04d_fc.png',Frame);
     fprintf('Print file %s\n',filename);
