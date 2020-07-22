@@ -148,18 +148,14 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
         elif gaugeno == 3:
             title('Wilford')
         elif gaugeno == 4:
-            title('Teton Town')
-        elif gaugeno == 5:
             title('Sugar City')
-        elif gaugeno == 6:
+        elif gaugeno == 5:
             title('Roberts')
-        elif gaugeno == 7:
+        elif gaugeno == 6:
             title('Rexburg')
-        #elif gaugeno == 8:
-            #title('Teton City','-k')
-        elif gaugeno == 9:
+        elif gaugeno == 7:
             title('Idaho Falls')
-        elif gaugeno == 10:
+        elif gaugeno == 8:
             title('Blackfoot')
 
         xlabel('Time (hours)')
@@ -181,7 +177,7 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     plotdata.parallel = True                 #
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
-    plotdata.print_framenos = range(0,20)        # list of frames to print
+    plotdata.print_framenos = range(0,1440,10)        # list of frames to print
     plotdata.print_gaugenos = 'all'           # list of gauges to print, linked to fignos above
     plotdata.print_fignos = 'all'            # list of figures to print
     plotdata.html = False                     # create html files of plots?
