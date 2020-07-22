@@ -72,10 +72,10 @@ def setrun(claw_pkg='geoclaw'):
     if output_style == 1:
         # Total number of frames will be frames_per_minute*60*n_hours
 
-        n_hours = 0.5              # Total number of hours in simulation        
+        n_hours = 8              # Total number of hours in simulation        
         
 
-        frames_per_minute = 60.0/60.0   # Frames every 60 seconds
+        frames_per_minute = (1/5)/60.0   # Frames every 60 seconds
 
     if output_style == 2:
         output_times = [1,2,3]    # Specify exact times to output files
@@ -97,11 +97,11 @@ def setrun(claw_pkg='geoclaw'):
     cellsize = 0.000277729665
 
     #Topo info (TetonLarge.Topo) decimal degrees, no minutes
-    m_topo = 3996
-    n_topo = 2988
-    xllcorner = -112.360138888891
-    yllcorner = 43.170138888889
-    cellsize = 0.000277729665
+    # m_topo = 3996
+    # n_topo = 2988
+    # xllcorner = -112.360138888891
+    # yllcorner = 43.170138888889
+    # cellsize = 0.000277729665
 
     # Computational coarse grid
     mx = 54
@@ -139,7 +139,7 @@ def setrun(claw_pkg='geoclaw'):
     dim_topo = ur_topo - ll_topo
     mdpt_topo = ll_topo + 0.5*(ur_topo-ll_topo)
 
-    dim_comp = 0.99*dim_topo   # Shrink domain inside of given bathymetry.
+    dim_comp = 0.9*dim_topo   # Shrink domain inside of given bathymetry.
 
     clawdata.lower[0] = mdpt_topo[0] - dim_comp[0]/2.0
     clawdata.upper[0] = mdpt_topo[0] + dim_comp[0]/2.0
@@ -199,7 +199,6 @@ def setrun(claw_pkg='geoclaw'):
         clawdata.num_output_times = int(frames_per_minute*60*n_hours)  # Plot every 10 seconds
         clawdata.tfinal = 60*60*n_hours #total number of seconds
         clawdata.output_t0 = True  # output at initial (or restart) time?
-        print(clawdata.tfinal)
 
     elif clawdata.output_style == 2:
         # Specify a list of output times.
@@ -558,7 +557,7 @@ def setgeo(rundata):
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamSmallHiRes.topo'])
 
     topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonDamLatLong.topo'])
-    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonLarge.topo'])
+    # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonLarge.topo'])
 
 
     # == setdtopo.data values ==

@@ -1,5 +1,5 @@
 OutputFlag = 'ascii';   % default value.
-OutputDir = './_output1';            % Default (reassign them here anyway)
+OutputDir = './_output';            % Default (reassign them here anyway)
 
 PlotType = 1;    % type of plot to produce:
 			     % 1 = pseudo-color (pcolor)
