@@ -16,7 +16,7 @@ import sys                              #sys - Python system-specific parameters
 import numpy as np                      #import numpy as np is an alias for the namespace that will be created
 import matplotlib.pyplot as plt         #collection of command style functions that makes the code work like MATLAB when creating figures
 from clawpack.geoclaw import topotools  #tools facilitate creating and manipulating topo/bathymetry file inputs 
-
+import clawpack.visclaw.particle_tools  #particle Lagrangian gauge plotting tool
 #--------------------------
 def setplot(plotdata):                  #defining setplot command (indenting by Python)
 #--------------------------
@@ -157,6 +157,11 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
             title('Idaho Falls')
         elif gaugeno == 8:
             title('Blackfoot')
+        elif gaugeno ==9:
+            title('Menan Butte North')
+        elif gaugeno ==10:
+            title("Menan Butte South")
+
 
         xlabel('Time (hours)')
         ylabel('Inundation Level (feet)') #does not like
