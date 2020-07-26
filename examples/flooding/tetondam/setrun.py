@@ -72,10 +72,10 @@ def setrun(claw_pkg='geoclaw'):
     if output_style == 1:
         # Total number of frames will be frames_per_minute*60*n_hours
 
-        n_hours = 36              # Total number of hours in simulation        
+        n_hours = 72              # Total number of hours in simulation        
         
 
-        frames_per_minute = 0.20   # Frames every 60 seconds
+        frames_per_minute = 1/30   # Frames every 1/2 hour
 
     if output_style == 2:
         output_times = [1,2,3]    # Specify exact times to output files
@@ -97,11 +97,11 @@ def setrun(claw_pkg='geoclaw'):
     cellsize = 0.000277729665
 
     #Topo info (TetonLarge.Topo) decimal degrees, no minutes
-    # m_topo = 3996
-    # n_topo = 2988
-    # xllcorner = -112.360138888891
-    # yllcorner = 43.170138888889
-    # cellsize = 0.000277729665
+    m_topo = 3996
+    n_topo = 2988
+    xllcorner = -112.360138888891
+    yllcorner = 43.170138888889 #copied into matlab
+    cellsize = 0.000277729665
 
     # Computational coarse grid
     mx = 54
@@ -196,7 +196,7 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal: number of output frames
-        clawdata.num_output_times = int(frames_per_minute*60*n_hours)  # Plot every 10 seconds
+        clawdata.num_output_times = int(frames_per_minute*60*n_hours)  # Plot 72 output times (every 1/2 hour), tfinal = equation
         clawdata.tfinal = 60*60*n_hours #total number of seconds
         clawdata.output_t0 = True  # output at initial (or restart) time?
 
