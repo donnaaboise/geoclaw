@@ -419,53 +419,53 @@ def setrun(claw_pkg='geoclaw'):
     rundata.gaugedata.gtype = {}
     
     # lagrangian & stationary gauges 
-    for rundata.gaugedata.gtype
-            if gaugeno <= 8:
-                rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])
-                rundata.gaugedata.gtype[gaugeno] = 'stationary'
-                    if gaugono == 1:
-                        #Teton_Canyon_Spero
-                        xc,yc = [-111.593965, 43.934059] 
-                        rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Mid Teton Canyon Spero
-                    else gaugeno == 2:
-                        #Teton_Canyon_Mouth_Spero
-                        xc,yc = [-111.66637, 43.933847] 
-                        rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Teton Canyon Mouth Spero
-                    else gaugeno ==3:
-                        #Wilford_Gauge_Spero
-                        xc,yc = [-111.672, 43.9144]
-                        rundata.gaugedata.gauges.append([3,xc,yc,0.,clawdata.tfinal])  # Wilford Gauge Spero 
-                    else gaugeno ==4:
-                        #Sugar_City_Gauge_Spero
-                        xc,yc = [-111.743358, 43.873840]
-                        rundata.gaugedata.gauges.append([4,xc,yc,0.,clawdata.tfinal])  # Sugar City Gauge 2 Spero
-                    else gaugeno ==5:
-                        #Roberts Gauge Spero
-                        xc,yc = [-112.126403, 43.7202] 
-                        rundata.gaugedata.gauges.append([5,xc,yc,0.,clawdata.tfinal])  # Roberts Gauge Spero 
-                    else gaugeno ==6:
-                        #Rexburg_Gauge_Spero
-                        xc,yc = [-111.792295, 43.823048] 
-                        rundata.gaugedata.gauges.append([6,xc,yc,0.,clawdata.tfinal])  # Rexburg Gauge Spero
-                    else gaugeno ==7:
-                        #Idaho Falls Gauge Spero
-                        xc,yc = [-112.17208, 43.32496] 
-                        rundata.gaugedata.gauges.append([7,xc,yc,0.,clawdata.tfinal])  # Idaho Falls Gauge Spero  
-                    else gaugeno ==8:
-                        # Blackfoot Gauge Spero (potentially because right on the border)
-                        xc,yc = [-112.340703, 43.187585] 
-                        rundata.gaugedata.gauges.append([8,xc,yc,0.,clawdata.tfinal])  # Blackfoot Gauge Spero
-            else gaugeno > 8
-                rundata.gaugedata.gauges.append([gaugeno, xg, yg, 0., clawdata.tfinal])
-                rundata.gaugedata.gtype[gaugeno] = 'lagrangian'
-                    if gaugeno == 9:
-                        #Menan Butte North Gauge Spero
-                        xg, yg = (-111.960303, 43.788554)
-                        rundata.gaugedata.gauges.append([9,xg,yg,0,clawdata.tfinal])
-                    if gaugeno == 10:
-                        #Menan Butte North Gauge Spero
-                        xg, yg = (-111.946528, 43.766423)
-                        rundata.gaugedata.gauges.append([10,xg,yg,0,clawdata.tfinal])                   
+    #if gaugeno <= 8:
+    #            rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])
+    #            rundata.gaugedata.gtype[gaugeno] = 'stationary'
+    if gaugono == 1:
+        #Teton_Canyon_Spero
+        xc,yc = [-111.593965, 43.934059] 
+    rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Mid Teton Canyon Spero
+        else gaugeno == 2:
+        #Teton_Canyon_Mouth_Spero
+        xc,yc = [-111.66637, 43.933847] 
+    rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Teton Canyon Mouth Spero
+    else gaugeno ==3:
+        #Wilford_Gauge_Spero
+        xc,yc = [-111.672, 43.9144]
+    rundata.gaugedata.gauges.append([3,xc,yc,0.,clawdata.tfinal])  # Wilford Gauge Spero 
+    else gaugeno ==4:
+        #Sugar_City_Gauge_Spero
+        xc,yc = [-111.743358, 43.873840]
+    rundata.gaugedata.gauges.append([4,xc,yc,0.,clawdata.tfinal])  # Sugar City Gauge 2 Spero
+    else gaugeno ==5:
+        #Roberts Gauge Spero
+        xc,yc = [-112.126403, 43.7202] 
+    rundata.gaugedata.gauges.append([5,xc,yc,0.,clawdata.tfinal])  # Roberts Gauge Spero 
+    else gaugeno ==6:
+        #Rexburg_Gauge_Spero
+        xc,yc = [-111.792295, 43.823048] 
+    rundata.gaugedata.gauges.append([6,xc,yc,0.,clawdata.tfinal])  # Rexburg Gauge Spero
+    else gaugeno ==7:
+        #Idaho Falls Gauge Spero
+        xc,yc = [-112.17208, 43.32496] 
+    rundata.gaugedata.gauges.append([7,xc,yc,0.,clawdata.tfinal])  # Idaho Falls Gauge Spero  
+    else gaugeno ==8:
+        #Blackfoot Gauge Spero (potentially because right on the border)
+        xc,yc = [-112.340703, 43.187585] 
+    rundata.gaugedata.gauges.append([8,xc,yc,0.,clawdata.tfinal])  # Blackfoot Gauge Spero
+    
+    else gaugeno > 8
+    rundata.gaugedata.gauges.append([gaugeno, xg, yg, 0., clawdata.tfinal])
+    rundata.gaugedata.gtype[gaugeno] = 'lagrangian'
+        if gaugeno == 9:
+            #Menan Butte North Gauge Spero
+            xg, yg = (-111.960303, 43.788554)
+            rundata.gaugedata.gauges.append([9,xg,yg,0,clawdata.tfinal])
+        if gaugeno == 10:
+            #Menan Butte North Gauge Spero
+            xg, yg = (-111.946528, 43.766423)
+            rundata.gaugedata.gauges.append([10,xg,yg,0,clawdata.tfinal])                   
 
     return rundata
     # end of function setrun
