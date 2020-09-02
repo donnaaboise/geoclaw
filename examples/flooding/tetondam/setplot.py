@@ -161,6 +161,26 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
             title('Menan Butte North')
         elif gaugeno ==10:
             title("Menan Butte South")
+        elif gaugeno == 11:
+            title('grid 1')
+        elif gaugeno == 12:
+            title('grid 2')
+        elif gaugeno == 13:
+            title('grid 3')
+        elif gaugeno == 14:
+            title('grid 4')
+        elif gaugeno == 15:
+            title('grid 5')
+        elif gaugeno == 16:
+            title('grid 6')
+        elif gaugeno == 17:
+            title('grid 7')
+        elif gaugeno == 18:
+            title('grid 8')
+        elif gaugeno == 19:
+            title('grid 9')
+        elif gaugeno == 20:
+            title('grid 10')
 
 
         xlabel('Time (hours)')

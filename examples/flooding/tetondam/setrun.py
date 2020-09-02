@@ -72,7 +72,7 @@ def setrun(claw_pkg='geoclaw'):
     if output_style == 1:
         # Total number of frames will be frames_per_minute*60*n_hours
 
-        n_hours = 72              # Total number of hours in simulation        
+        n_hours = 5              # Total number of hours in simulation        
         
 
         frames_per_minute = 1/30   # Frames every 1/2 hour
@@ -384,6 +384,27 @@ def setrun(claw_pkg='geoclaw'):
     amrdata.tprint = True # time step reporting each level
     amrdata.uprint = False # update/upbnd reporting
 
+    # More AMR parameters can be set -- see the defults in pyclaw/data.py 
+
+    # -----------------------------------------------
+
+    # Regions: 
+
+    # -----------------------------------------------
+  
+
+    # INL Regions
+    #   Regions to be refined :
+    #    (1) Refine initial reservoir to level 4
+    #        (otherwise, we won't resolve valley, and
+    #        won't fill the reservoir properly)
+    #    (2) Refine around nuclear power plant (indicated by gauge
+    #        100, 101, ..., 115, below)
+    #    (3) Computational domain, with maxlevel=4
+    #
+    # To specify regions of refinement append lines of the form
+    #    regions.append([minlevel,maxlevel,t1,t2,x1,x2,y1,y2])
+
     # -----------------------------------------------
     regions = rundata.regiondata.regions
 
@@ -395,81 +416,128 @@ def setrun(claw_pkg='geoclaw'):
 
     xll = [-111.64, 43.913661]  # From email
     xur = [-111.60, 43.92]      # from email
-    region_lower, region_upper,_ = tools.region_coords(xll,xur, clawdata.num_cells, clawdata.lower, clawdata.upper)
+    region_lower, region_upper,_ = tools.region_coords(xll,xur,
+                                                     clawdata.num_cells,
+                                                     clawdata.lower,
+                                                     clawdata.upper)
 
     regions.append([5,5,0, 1e10, region_lower[0],region_upper[0],region_lower[1],region_upper[1]])
 
     # Computational domain.  With exception of region above, don't go beyond level 4
     regions.append([1,4,0, 1e10, clawdata.lower[0],clawdata.upper[0],clawdata.lower[1],clawdata.upper[1]])
 
-    # More AMR parameters can be set -- see the defaults in pyclaw/data.py
+    # -------------------------------------------------------
 
-    # == setgauges.data values ==
+    #
     # For gauges append lines of the form  [gaugeno, x, y, t1, t2]
-    # rundata.gaugedata.add_gauge()
-
-    # to make all gauges have the same type, use one of these lines:
-    #rundata.gaugedata.gtype = 'Lagrangian'
-    #rundata.gaugedata.gtype = 'Stationary'
-
     # -------------------------------------------------------
     # SPERO: when coding gauges, make sure to be in degrees when retrieving that data
-
-    # or to have some of each type (lagrangian & Stationary), use a dictionary:
     rundata.gaugedata.gtype = {}
-    
-    # lagrangian & stationary gauges 
-    #if gaugeno <= 8:
-    #            rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])
-    #            rundata.gaugedata.gtype[gaugeno] = 'stationary'
-    if gaugono == 1:
-        #Teton_Canyon_Spero
-        xc,yc = [-111.593965, 43.934059] 
+
+    #Teton_Canyon_Spero
+    xc,yc = [-111.593965, 43.934059] 
     rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Mid Teton Canyon Spero
-        else gaugeno == 2:
-        #Teton_Canyon_Mouth_Spero
-        xc,yc = [-111.66637, 43.933847] 
+    rundata.gaugedata.gtype[1] = 'stationary'
+
+    #Teton_Canyon_Mouth_Spero
+    xc,yc = [-111.66637, 43.933847] 
     rundata.gaugedata.gauges.append([2,xc,yc,0.,clawdata.tfinal])  # Teton Canyon Mouth Spero
-    else gaugeno ==3:
-        #Wilford_Gauge_Spero
-        xc,yc = [-111.672, 43.9144]
-    rundata.gaugedata.gauges.append([3,xc,yc,0.,clawdata.tfinal])  # Wilford Gauge Spero 
-    else gaugeno ==4:
-        #Sugar_City_Gauge_Spero
-        xc,yc = [-111.743358, 43.873840]
+    rundata.gaugedata.gtype[2] = 'stationary'
+
+    #Wilford_Gauge_Spero
+    xc,yc = [-111.672, 43.9144]
+    rundata.gaugedata.gauges.append([3,xc,yc,0.,clawdata.tfinal])  # Wilford Gauge Spero
+    rundata.gaugedata.gtype[3] = 'stationary'
+
+    #Sugar_City_Gauge_Spero
+    xc,yc = [-111.743358, 43.873840]
     rundata.gaugedata.gauges.append([4,xc,yc,0.,clawdata.tfinal])  # Sugar City Gauge 2 Spero
-    else gaugeno ==5:
-        #Roberts Gauge Spero
-        xc,yc = [-112.126403, 43.7202] 
-    rundata.gaugedata.gauges.append([5,xc,yc,0.,clawdata.tfinal])  # Roberts Gauge Spero 
-    else gaugeno ==6:
-        #Rexburg_Gauge_Spero
-        xc,yc = [-111.792295, 43.823048] 
+    rundata.gaugedata.gtype[4] = 'stationary'
+
+    #Roberts Gauge Spero
+    xc,yc = [-112.126403, 43.7202] 
+    rundata.gaugedata.gauges.append([5,xc,yc,0.,clawdata.tfinal])  # Roberts Gauge Spero   
+    rundata.gaugedata.gtype[5] = 'stationary'
+
+    #Rexburg_Gauge_Spero
+    xc,yc = [-111.792295, 43.823048] 
     rundata.gaugedata.gauges.append([6,xc,yc,0.,clawdata.tfinal])  # Rexburg Gauge Spero
-    else gaugeno ==7:
-        #Idaho Falls Gauge Spero
-        xc,yc = [-112.17208, 43.32496] 
-    rundata.gaugedata.gauges.append([7,xc,yc,0.,clawdata.tfinal])  # Idaho Falls Gauge Spero  
-    else gaugeno ==8:
-        #Blackfoot Gauge Spero (potentially because right on the border)
-        xc,yc = [-112.340703, 43.187585] 
+    rundata.gaugedata.gtype[6] = 'stationary'
+
+    #Idaho Falls Gauge Spero
+    xc,yc = [-112.17208, 43.32496] 
+    rundata.gaugedata.gauges.append([7,xc,yc,0.,clawdata.tfinal])  # Idaho Falls Gauge Spero    
+    rundata.gaugedata.gtype[7] = 'stationary'
+
+    # Blackfoot Gauge Spero (potentially because right on the border)
+    xc,yc = [-112.340703, 43.187585] 
     rundata.gaugedata.gauges.append([8,xc,yc,0.,clawdata.tfinal])  # Blackfoot Gauge Spero
+    rundata.gaugedata.gtype[8] = 'stationary'  
     
-    else gaugeno > 8
-    rundata.gaugedata.gauges.append([gaugeno, xg, yg, 0., clawdata.tfinal])
-    rundata.gaugedata.gtype[gaugeno] = 'lagrangian'
-        if gaugeno == 9:
-            #Menan Butte North Gauge Spero
-            xg, yg = (-111.960303, 43.788554)
-            rundata.gaugedata.gauges.append([9,xg,yg,0,clawdata.tfinal])
-        if gaugeno == 10:
-            #Menan Butte North Gauge Spero
-            xg, yg = (-111.946528, 43.766423)
-            rundata.gaugedata.gauges.append([10,xg,yg,0,clawdata.tfinal])                   
+    #Menan Butte North Gauge Spero
+    xg, yg = (-111.960303, 43.788554)
+    rundata.gaugedata.gauges.append([9,xg,yg,0,clawdata.tfinal])
+    rundata.gaugedata.gtype[9] = 'lagrangian'
+
+    #Menan Butte North Gauge Spero
+    xg, yg = (-111.946528, 43.766423)
+    rundata.gaugedata.gauges.append([10,xg,yg,0,clawdata.tfinal])  
+    rundata.gaugedata.gtype[10] = 'lagrangian'
+
+    #Grid TD Canyon Entrance 1
+    xg, yg = (-111.613103, 43.936085)
+    rundata.gaugedata.gauges.append([11,xg,yg,0,clawdata.tfinal])  
+    rundata.gaugedata.gtype[11] = 'lagrangian'
+
+    #Grid TD Canyon Entrance 2
+    xg, yg = (-111.613103, 43.932788)
+    rundata.gaugedata.gauges.append([12,xg,yg,0,clawdata.tfinal])  
+    rundata.gaugedata.gtype[12] = 'lagrangian'
+
+    #Grid TD Canyon Entrance 3
+    xg, yg = (-111.613103, 43.929322)
+    rundata.gaugedata.gauges.append([13,xg,yg,0,clawdata.tfinal])  
+    rundata.gaugedata.gtype[13] = 'lagrangian'
+
+    #Grid TD Canyon Entrance 4
+    xg, yg = (-111.613103, 43.926584)
+    rundata.gaugedata.gauges.append([14,xg,yg,0,clawdata.tfinal])  
+    rundata.gaugedata.gtype[14] = 'lagrangian'
+
+    #Grid TD Canyon Entrance 5
+    xg, yg = (-111.613103, 43.9923232)
+    rundata.gaugedata.gauges.append([15,xg,yg,0,clawdata.tfinal])  
+    rundata.gaugedata.gtype[15] = 'lagrangian'
+
+    #Grid TD Canyon Entrance 6
+    xg, yg = (-111.20021, 43.9536721)
+    rundata.gaugedata.gauges.append([16,xg,yg,0,clawdata.tfinal])  
+    rundata.gaugedata.gtype[16] = 'lagrangian'
+
+    #Grid TD Canyon Entrance 7
+    xg, yg = (-111.20021, 43.932245)
+    rundata.gaugedata.gauges.append([17,xg,yg,0,clawdata.tfinal])  
+    rundata.gaugedata.gtype[17] = 'lagrangian'
+
+     #Grid TD Canyon Entrance 8
+    xg, yg = (-111.20021, 43.924967)
+    rundata.gaugedata.gauges.append([18,xg,yg,0,clawdata.tfinal])  
+    rundata.gaugedata.gtype[18] = 'lagrangian'
+
+    #Grid TD Canyon Entrance 9
+    xg, yg = (-111.20021, 43.923153)
+    rundata.gaugedata.gauges.append([19,xg,yg,0,clawdata.tfinal])  
+    rundata.gaugedata.gtype[19] = 'lagrangian'
+
+    #Grid TD Canyon Entrance 10
+    xg, yg = (-111.20021, 43.918381)
+    rundata.gaugedata.gauges.append([20,xg,yg,0,clawdata.tfinal])  
+    rundata.gaugedata.gtype[20] = 'lagrangian'
 
     return rundata
     # end of function setrun
     # ----------------------
+
 
 #-------------------
 def setgeo(rundata):
