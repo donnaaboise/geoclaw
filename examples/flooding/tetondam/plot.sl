@@ -18,5 +18,7 @@ module load gcc/6.4.0
 export OMP_MAX_THREADS=4
 
 # Execute the program:
-cd /home/hspero/clawpack5.6/clawpack/geoclaw/examples/flooding/tetondam
+
+cd /home/hspero/clawpack5.6/clawpack/geoclaw/examples/flooding/tetondam/_output
+
 make plots
