@@ -63,7 +63,7 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # Time stepping
-    initial_dt = 1  # Initial time step
+    initial_dt = 100  # Initial time step
     fixed_dt = False   # Take constant time step
 
     # Output files
@@ -107,10 +107,10 @@ def setrun(claw_pkg='geoclaw'):
     mx = 54
     my = 19
 
-    maxlevel = 4
+    maxlevel = 4 #resolution based on levels
     ratios_x = [2,4,4,4]
     ratios_y = [2,4,4,4]
-    ratios_t = [2,4,4,4]
+    ratios_t = [1,1,1,1]
 
     # ---------------
     # Spatial domain:
@@ -139,7 +139,8 @@ def setrun(claw_pkg='geoclaw'):
     dim_topo = ur_topo - ll_topo
     mdpt_topo = ll_topo + 0.5*(ur_topo-ll_topo)
 
-    dim_comp = 0.9*dim_topo   # Shrink domain inside of given bathymetry.
+    #can adjust the 0.95 to include Blackfoot :)
+    dim_comp = 0.95*dim_topo   # Shrink domain inside of given bathymetry.
 
     clawdata.lower[0] = mdpt_topo[0] - dim_comp[0]/2.0
     clawdata.upper[0] = mdpt_topo[0] + dim_comp[0]/2.0
@@ -467,14 +468,14 @@ def setrun(claw_pkg='geoclaw'):
     rundata.gaugedata.gtype[6] = 'stationary'
 
     #Idaho Falls Gauge Spero
-    xc,yc = [-112.17208, 43.32496] 
-    rundata.gaugedata.gauges.append([7,xc,yc,0.,clawdata.tfinal])  # Idaho Falls Gauge Spero    
-    rundata.gaugedata.gtype[7] = 'stationary'
+    #xc,yc = [-112.17208, 43.32496] 
+    #rundata.gaugedata.gauges.append([7,xc,yc,0.,clawdata.tfinal])  # Idaho Falls Gauge Spero    
+    #rundata.gaugedata.gtype[7] = 'stationary'
 
     # Blackfoot Gauge Spero (potentially because right on the border)
-    xc,yc = [-112.340703, 43.187585] 
-    rundata.gaugedata.gauges.append([8,xc,yc,0.,clawdata.tfinal])  # Blackfoot Gauge Spero
-    rundata.gaugedata.gtype[8] = 'stationary'  
+    #xc,yc = [-112.340703, 43.187585] 
+    #rundata.gaugedata.gauges.append([8,xc,yc,0.,clawdata.tfinal])  # Blackfoot Gauge Spero
+    #rundata.gaugedata.gtype[8] = 'stationary'  
     
     #LaGrangian Gauges
 
@@ -507,36 +508,6 @@ def setrun(claw_pkg='geoclaw'):
     xg, yg = (-111.613103, 43.926584)
     rundata.gaugedata.gauges.append([14,xg,yg,0,clawdata.tfinal])  
     rundata.gaugedata.gtype[14] = 'lagrangian'
-
-    #Grid TD Canyon Entrance 5
-    xg, yg = (-111.613103, 43.9923232)
-    rundata.gaugedata.gauges.append([15,xg,yg,0,clawdata.tfinal])  
-    rundata.gaugedata.gtype[15] = 'lagrangian'
-
-    #Grid TD Canyon Entrance 6
-    xg, yg = (-111.20021, 43.9536721)
-    rundata.gaugedata.gauges.append([16,xg,yg,0,clawdata.tfinal])  
-    rundata.gaugedata.gtype[16] = 'lagrangian'
-
-    #Grid TD Canyon Entrance 7
-    xg, yg = (-111.20021, 43.932245)
-    rundata.gaugedata.gauges.append([17,xg,yg,0,clawdata.tfinal])  
-    rundata.gaugedata.gtype[17] = 'lagrangian'
-
-     #Grid TD Canyon Entrance 8
-    xg, yg = (-111.20021, 43.924967)
-    rundata.gaugedata.gauges.append([18,xg,yg,0,clawdata.tfinal])  
-    rundata.gaugedata.gtype[18] = 'lagrangian'
-
-    #Grid TD Canyon Entrance 9
-    xg, yg = (-111.20021, 43.923153)
-    rundata.gaugedata.gauges.append([19,xg,yg,0,clawdata.tfinal])  
-    rundata.gaugedata.gtype[19] = 'lagrangian'
-
-    #Grid TD Canyon Entrance 10
-    xg, yg = (-111.20021, 43.918381)
-    rundata.gaugedata.gauges.append([20,xg,yg,0,clawdata.tfinal])  
-    rundata.gaugedata.gtype[20] = 'lagrangian'
 
     return rundata
     # end of function setrun
