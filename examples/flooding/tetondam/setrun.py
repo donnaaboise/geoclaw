@@ -96,12 +96,12 @@ def setrun(claw_pkg='geoclaw'):
     yllcorner = 43.581746970335
     cellsize = 0.000277729665
 
-    #Topo info (TetonLarge.Topo) decimal degrees, no minutes
-    m_topo = 3996
-    n_topo = 2988
-    xllcorner = -112.360138888891
-    yllcorner = 43.170138888889 #copied into matlab
-    cellsize = 0.000277729665
+    #Topo info (TetonLarge.Topo) decimal degrees, no minutes (commented out 09/09/2020)
+    #m_topo = 3996
+    #n_topo = 2988
+    #xllcorner = -112.360138888891
+    #yllcorner = 43.170138888889 #copied into matlab
+    #cellsize = 0.000277729665
 
     # Computational coarse grid
     mx = 54
@@ -434,6 +434,8 @@ def setrun(claw_pkg='geoclaw'):
     # SPERO: when coding gauges, make sure to be in degrees when retrieving that data
     rundata.gaugedata.gtype = {}
 
+    #Stationary Gauges
+
     #Teton_Canyon_Spero
     xc,yc = [-111.593965, 43.934059] 
     rundata.gaugedata.gauges.append([1,xc,yc,0.,clawdata.tfinal])  # Mid Teton Canyon Spero
@@ -474,6 +476,8 @@ def setrun(claw_pkg='geoclaw'):
     rundata.gaugedata.gauges.append([8,xc,yc,0.,clawdata.tfinal])  # Blackfoot Gauge Spero
     rundata.gaugedata.gtype[8] = 'stationary'  
     
+    #LaGrangian Gauges
+
     #Menan Butte North Gauge Spero
     xg, yg = (-111.960303, 43.788554)
     rundata.gaugedata.gauges.append([9,xg,yg,0,clawdata.tfinal])
@@ -565,7 +569,7 @@ def setgeo(rundata):
     # == Algorithm and Initial Conditions ==
     geo_data.sea_level = 0.0
     geo_data.dry_tolerance = 1.e-3
-    geo_data.friction_forcing = True
+    geo_data.friction_forcing = False #(09/23/2020)
     geo_data.manning_coefficient = 0.03 # need to make variable manning_coefficient
     geo_data.friction_depth = 1.e6
 
@@ -574,7 +578,7 @@ def setgeo(rundata):
     refinement_data.wave_tolerance = 1.e-2
     refinement_data.deep_depth = 1e2
     refinement_data.max_level_deep = 3
-    refinement_data.variable_dt_refinement_ratios = False
+    refinement_data.variable_dt_refinement_ratios = True #(09/23/2020)
 
     # == settopo.data values ==
     topo_data = rundata.topo_data
@@ -585,8 +589,8 @@ def setgeo(rundata):
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLargeLowRes.topo'])
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamSmallHiRes.topo'])
 
-    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonDamLatLong.topo'])
-    # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonLarge.topo'])
+    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonDamLatLong.topo']) #deciding what topo to use 
+    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonLarge.topo']) #deciding what topo to use
 
 
     # == setdtopo.data values ==
@@ -595,13 +599,12 @@ def setgeo(rundata):
     #   [topotype, minlevel,maxlevel,fname]
     dtopo_data = rundata.dtopo_data
 
-    # is there something else that I will need to change if ^^^ ?
-
-    # == setqinit.data values ==
+    # == setqinit.data values ==set
     rundata.qinit_data.qinit_type = 0
     rundata.qinit_data.qinitfiles = []
     # for qinit perturbations, append lines of the form: (<= 1 allowed for now!)
     #   [minlev, maxlev, fname]
+    rundata.qinit_data.qinitfiles.append([1, 2, 'hump.xyz']) #added 09/23/2020
 
     # == setfixedgrids.data values ==
     fixedgrids = rundata.fixed_grid_data

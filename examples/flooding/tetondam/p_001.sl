@@ -18,7 +18,6 @@ module load gcc/6.4.0
 export OMP_MAX_THREADS=4
 
 # Execute the program:
-make topo
 make data
 cd /home/hspero/clawpack5.6/clawpack/geoclaw/examples/flooding/tetondam/_output
 cp ../*.data .
