@@ -96,6 +96,10 @@ def setrun(claw_pkg='geoclaw'):
     yllcorner = 43.581746970335
     cellsize = 0.000277729665
 
+    # # Computational coarse grid
+    # mx = 54
+    # my = 19
+
     #Topo info (TetonLarge.Topo) decimal degrees, no minutes
     m_topo = 3996
     n_topo = 2988
@@ -103,9 +107,8 @@ def setrun(claw_pkg='geoclaw'):
     yllcorner = 43.170138888889 #copied into matlab
     cellsize = 0.000277729665
 
-    # Computational coarse grid
-    mx = 54
-    my = 19
+    mx = 60
+    my = 45
 
     maxlevel = 4
     ratios_x = [2,4,4,4]
@@ -139,7 +142,7 @@ def setrun(claw_pkg='geoclaw'):
     dim_topo = ur_topo - ll_topo
     mdpt_topo = ll_topo + 0.5*(ur_topo-ll_topo)
 
-    dim_comp = 0.9*dim_topo   # Shrink domain inside of given bathymetry.
+    dim_comp = 0.975*dim_topo   # Shrink domain inside of given topography.
 
     clawdata.lower[0] = mdpt_topo[0] - dim_comp[0]/2.0
     clawdata.upper[0] = mdpt_topo[0] + dim_comp[0]/2.0
@@ -585,7 +588,7 @@ def setgeo(rundata):
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLargeLowRes.topo'])
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamSmallHiRes.topo'])
 
-    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonDamLatLong.topo'])
+    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLatLong.topo'])
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'TetonLarge.topo'])
 
 
