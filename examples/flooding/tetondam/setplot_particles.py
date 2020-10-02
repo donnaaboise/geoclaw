@@ -302,12 +302,12 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     plotdata.html = False                     # create html files of plots?
     plotdata.html_movie = True                  # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
-    plotdata.latex = True                    # create latex file of plots?
-    plotdata.latex_figsperline = 2           # layout of plots
-    plotdata.latex_framesperline = 1         # layout of plots
+    plotdata.latex = False                    # create latex file of plots?
+    #plotdata.latex_figsperline = 2           # layout of plots
+    #plotdata.latex_framesperline = 1         # layout of plots
     plotdata.latex_makepdf = False           # also run pdflatex?
     plotdata.parallel = True                 # make multiple frame png's at once
-    plotdata.kml = True
+    plotdata.kml = False
     plotdata.html_movie_width = 700         # width used in JSAnimation
     
     return plotdata
