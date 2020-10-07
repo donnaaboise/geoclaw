@@ -64,10 +64,10 @@ def setrun(claw_pkg='geoclaw'):
 
     # Time stepping
     initial_dt = 1  # Initial time step
-    fixed_dt = True   # Take constant time step
+    fixed_dt = False   # Take constant time step
 
     # Output files
-    output_style = 3   
+    output_style = 1   
 
     if output_style == 1:
         # Total number of frames will be frames_per_minute*60*n_hours
@@ -113,7 +113,7 @@ def setrun(claw_pkg='geoclaw'):
     maxlevel = 4 #resolution based on levels
     ratios_x = [2,4,4,4]
     ratios_y = [2,4,4,4]
-    ratios_t = [1,1,1,1]
+    ratios_t = [2,4,4,4]
 
     # ---------------
     # Spatial domain:
@@ -544,7 +544,7 @@ def setgeo(rundata):
     # == Algorithm and Initial Conditions ==
     geo_data.sea_level = 0.0
     geo_data.dry_tolerance = 1.e-3
-    geo_data.friction_forcing = False #(09/23/2020)
+    geo_data.friction_forcing = True   #(09/23/2020)
     geo_data.manning_coefficient = 0.03 # need to make variable manning_coefficient
     geo_data.friction_depth = 1.e6
 
@@ -553,7 +553,7 @@ def setgeo(rundata):
     refinement_data.wave_tolerance = 1.e-2
     refinement_data.deep_depth = 1e2
     refinement_data.max_level_deep = 3
-    refinement_data.variable_dt_refinement_ratios = True #(09/23/2020)
+    refinement_data.variable_dt_refinement_ratios = False #(09/23/2020)
 
     # == settopo.data values ==
     topo_data = rundata.topo_data
@@ -579,7 +579,6 @@ def setgeo(rundata):
     rundata.qinit_data.qinitfiles = []
     # for qinit perturbations, append lines of the form: (<= 1 allowed for now!)
     #   [minlev, maxlev, fname]
-    rundata.qinit_data.qinitfiles.append([1, 2, 'hump.xyz']) #added 09/23/2020
 
     # == setfixedgrids.data values ==
     fixedgrids = rundata.fixed_grid_data
