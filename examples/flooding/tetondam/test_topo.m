@@ -42,11 +42,17 @@ for i = 1:2
     yp = [t.yll_comp, t.yll_comp, t.yur_comp, t.yur_comp, t.yll_comp];
     plot(xp,yp,'k','linewidth',2);
     hold on;
+    if i == 1
+        p = fill(xp,yp,'r','linewidth',1);
+    else
+        p = fill(xp,yp,'b','linewidth',1);
+    end        
+    set(p,'facealpha',0.5);
     
     xp = [t.xll, t.xur, t.xur, t.xll, t.xll];
     yp = [t.yll, t.yll, t.yur, t.yur, t.yll];
     plot(xp,yp,'k','linewidth',1);
-    
+        
     
     daspect([1,1,1]);
     
@@ -56,35 +62,6 @@ axis([-112.45, -111.15, 43.1,  44.05]);
 
 add_gauges('geoclaw')
 
-%{
-gauges = [-112.17208, 43.32496,
-    -112.340703, 43.187585,
-    -111.960303, 43.788554,
-    -111.946528, 43.766423,
-    -111.613103, 43.936085,
-    -111.613103, 43.932788,
-    -111.613103, 43.929322,
-    -111.613103, 43.926584,
-    -111.613103, 43.9923232,
-    -111.20021, 43.9536721,
-    -111.20021, 43.932245,
-    -111.20021, 43.924967,
-    -111.20021, 43.923153,
-    -111.20021, 43.918381];
-
-num_gauges = length(gauges);
-for n = 1:num_gauges
-    id = n + 7;
-    x = gauges(n,1);
-    y = gauges(n,2);
-    hg = plot(x,u,'m.','linewidth',3,'markersize',95);
-    h = text(x,y,zp,sprintf('%d',data(1)),'fontsize',11,'color','k');
-    set(h,'HorizontalAlignment','center');
-    % set(h,'backgroundcolor','none');
-    gauge_handles(n) = hg;
-
-plot(gauges(:,1), gauges(:,2),'.','markersize',20);
-%}
 
 end
 
