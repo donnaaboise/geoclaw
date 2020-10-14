@@ -205,8 +205,8 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     plotdata.print_framenos = range(0,1440,10)        # list of frames to print
     plotdata.print_gaugenos = 'all'           # list of gauges to print, linked to fignos above
     plotdata.print_fignos = 'all'            # list of figures to print
-    plotdata.html = False                     # create html files of plots?
-    plotdata.html_movie = False                  # create html files of plots?
+    plotdata.html = True                     # create html files of plots?
+    plotdata.html_movie = True                  # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
     plotdata.latex = False                    # create latex file of plots?
     plotdata.latex_figsperline = 2           # layout of plots
