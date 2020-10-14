@@ -72,7 +72,7 @@ def setrun(claw_pkg='geoclaw'):
     if output_style == 1:
         # Total number of frames will be frames_per_minute*60*n_hours
 
-        n_hours = 10              # Total number of hours in simulation, changed 10.14.2020        
+        n_hours = 20              # Total number of hours in simulation, changed 10.14.2020  should be 5      
         
 
         frames_per_minute = 1/30   # Frames every 1/2 hour
@@ -557,7 +557,7 @@ def setgeo(rundata):
     geo_data.sea_level = 0.0
     geo_data.dry_tolerance = 1.e-3
     geo_data.friction_forcing = True
-    geo_data.manning_coefficient = 0.03 # need to make variable manning_coefficient
+    geo_data.manning_coefficient = 0.13 # changed today 10142020, to 0.08 LI Developed  - need to make variable manning_coefficient
     geo_data.friction_depth = 1.e6
 
     # Refinement data

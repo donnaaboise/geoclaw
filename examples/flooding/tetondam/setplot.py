@@ -12,11 +12,19 @@ this module is imported by the plotting routines and then the
 fucntion setplot is called to set the plot parameters.
 
 """
+from __future__ import absolute_import
+from __future__ import print_function
+
+from clawpack.visclaw import gaugetools
+
+from clawpack.visclaw import particle_tools
+from clawpack.visclaw import legend_tools
+
 import sys                              #sys - Python system-specific parameters and functions, this compiles Python arguments to be used
 import numpy as np                      #import numpy as np is an alias for the namespace that will be created
 import matplotlib.pyplot as plt         #collection of command style functions that makes the code work like MATLAB when creating figures
 from clawpack.geoclaw import topotools  #tools facilitate creating and manipulating topo/bathymetry file inputs 
-import clawpack.visclaw.particle_tools  #particle Lagrangian gauge plotting tool
+
 #--------------------------
 def setplot(plotdata):                  #defining setplot command (indenting by Python)
 #--------------------------
