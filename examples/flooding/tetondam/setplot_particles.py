@@ -121,7 +121,7 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     plotitem.pcolor_cmap = geoplot.googleearth_flooding
     
     cmin = 0 #color axis MATLAB scaling for water color
-    cmax = 5 #color axis MATLAB scaling for water color
+    cmax = 20 #color axis MATLAB scaling for water color, note this is being used for velocity
     cmap = geoplot.googleearth_flooding  # transparent --> light blue --> dark blue
     
     plotitem.pcolor_cmin = cmin #defining the minimum color using color axis
@@ -129,9 +129,18 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     plotitem.add_colorbar = True
     plotitem.colorbar_label = 'm/s'
     plotitem.amr_celledges_show = [0,0,0]
-    plotitem.amr_patchedges_show = [1]
-    plotitem.amr_patchedges_color = ['m','g','w'] #can try
+    plotitem.amr_patchedges_show = [0]
+    plotitem.amr_patchedges_color = ['m','g','w'] #can try 
 
+    # Land
+    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    #plotitem.show = False
+    plotitem.plot_var = geoplot.land
+    plotitem.pcolor_cmap = geoplot.land_colors
+    plotitem.pcolor_cmin = 0.0
+    plotitem.pcolor_cmax = 100.0
+    plotitem.add_colorbar = False
+    plotitem.amr_celledges_show = [0,0,0]
 
     #-------------------------------------------------------------
     #  Set several parameters for the Teton Dam Modeling
@@ -296,10 +305,10 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     plotdata.parallel = True                 #
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
-    plotdata.print_framenos = range(0,1440,10)        # list of frames to print
+    plotdata.print_framenos = range(0,1440,1)        # list of frames to print - can try ten
     plotdata.print_gaugenos = 'all'           # list of gauges to print, linked to fignos above
     plotdata.print_fignos = 'all'            # list of figures to print
-    plotdata.html = False                     # create html files of plots?
+    plotdata.html = True                    # create html files of plots?
     plotdata.html_movie = True                  # create html files of plots?
     plotdata.html_homelink = '../README.html'   # pointer for top of index
     plotdata.latex = False                    # create latex file of plots?

@@ -12,8 +12,8 @@ CLAWMAKE = $(CLAW)/clawutil/src/Makefile.common
 # Adjust these variables if desired:
 # ----------------------------------
 
-CLAW_PKG = geoclaw                  # Clawpack package to use
-EXE = xgeoclaw                 # Executable to create
+CLAW_PKG = geoclaw               	   # Clawpack package to use
+EXE = xgeoclaw                 	   		# Executable to create
 SETRUN_FILE = setrun.py                  # File containing function to make data
 OUTDIR = _output                         # Directory for output
 SETPLOT_FILE = setplot_particles.py      # File containing function to set plots, edited 4/10

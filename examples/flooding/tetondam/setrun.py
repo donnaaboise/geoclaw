@@ -67,7 +67,7 @@ def setrun(claw_pkg='geoclaw'):
     fixed_dt = False   # Take constant time step
 
     # Output files
-    output_style = 1   
+    output_style = 1 #changed 10.21   
 
     if output_style == 1:
         # Total number of frames will be frames_per_minute*60*n_hours
@@ -471,6 +471,27 @@ def setrun(claw_pkg='geoclaw'):
     rundata.gaugedata.gauges.append([6,xc,yc,0.,clawdata.tfinal])  # Rexburg Gauge Spero
     rundata.gaugedata.gtype[6] = 'stationary'
 
+    # or to have some of each type, use a dictionary:
+    rundata.gaugedata.gtype = {}
+    
+    # lagrangian gauges Northeastern
+    for iyg in range(0,3): #ten is the grid
+        for ixg in range(0,3):
+            gaugeno = 10*iyg + ixg + 100
+            yg = 43.91335 + 0.01*iyg #testing
+            xg = -111.6211080 + 0.012*ixg #test
+            rundata.gaugedata.gauges.append([gaugeno, xg, yg, 0., 1e10])
+            rundata.gaugedata.gtype[gaugeno] = 'lagrangian'
+    
+    # lagrangian gauges Southwestern - Menan Butte
+    for iyg in range(0,3): #ten is the grid
+        for ixg in range(0,3):
+            gaugeno = 10*iyg + ixg + 200
+            yg = 43.800575 + 0.01*iyg #testing
+            xg = -111.9419740 + 0.012*ixg #test
+            rundata.gaugedata.gauges.append([gaugeno, xg, yg, 0., 1e10])
+            rundata.gaugedata.gtype[gaugeno] = 'lagrangian'
+
     # #Idaho Falls Gauge Spero
     # xc,yc = [-112.17208, 43.32496] 
     # rundata.gaugedata.gauges.append([7,xc,yc,0.,clawdata.tfinal])  # Idaho Falls Gauge Spero    
@@ -484,14 +505,14 @@ def setrun(claw_pkg='geoclaw'):
     #LaGrangian Gauges
 
     #Menan Butte North Gauge Spero
-    xg, yg = (-111.960303, 43.788554)
-    rundata.gaugedata.gauges.append([9,xg,yg,0,clawdata.tfinal])
-    rundata.gaugedata.gtype[9] = 'lagrangian'
+    # xg, yg = (-111.960303, 43.788554)
+    # rundata.gaugedata.gauges.append([9,xg,yg,0,clawdata.tfinal])
+    # rundata.gaugedata.gtype[9] = 'lagrangian'
 
     #Menan Butte North Gauge Spero
-    xg, yg = (-111.946528, 43.766423)
-    rundata.gaugedata.gauges.append([10,xg,yg,0,clawdata.tfinal])  
-    rundata.gaugedata.gtype[10] = 'lagrangian'
+    # xg, yg = (-111.946528, 43.766423)
+    # rundata.gaugedata.gauges.append([10,xg,yg,0,clawdata.tfinal])  
+    # rundata.gaugedata.gtype[10] = 'lagrangian'
 
     # #Grid TD Canyon Entrance 1
     # xg, yg = (-111.613103, 43.936085)
@@ -499,19 +520,19 @@ def setrun(claw_pkg='geoclaw'):
     # rundata.gaugedata.gtype[11] = 'lagrangian'
 
     #Grid TD Canyon Entrance 2
-    xg, yg = (-111.613103, 43.932788)
-    rundata.gaugedata.gauges.append([12,xg,yg,0,clawdata.tfinal])  
-    rundata.gaugedata.gtype[12] = 'lagrangian'
+    # xg, yg = (-111.613103, 43.932788)
+    # rundata.gaugedata.gauges.append([12,xg,yg,0,clawdata.tfinal])  
+    # rundata.gaugedata.gtype[12] = 'lagrangian'
 
-    #Grid TD Canyon Entrance 3
-    xg, yg = (-111.613103, 43.929322)
-    rundata.gaugedata.gauges.append([13,xg,yg,0,clawdata.tfinal])  
-    rundata.gaugedata.gtype[13] = 'lagrangian'
+    # #Grid TD Canyon Entrance 3
+    # xg, yg = (-111.613103, 43.929322)
+    # rundata.gaugedata.gauges.append([13,xg,yg,0,clawdata.tfinal])  
+    # rundata.gaugedata.gtype[13] = 'lagrangian'
 
     #Grid TD Canyon Entrance 4
-    xg, yg = (-111.613103, 43.926584)
-    rundata.gaugedata.gauges.append([14,xg,yg,0,clawdata.tfinal])  
-    rundata.gaugedata.gtype[14] = 'lagrangian'
+    # xg, yg = (-111.613103, 43.926584)
+    # rundata.gaugedata.gauges.append([14,xg,yg,0,clawdata.tfinal])  
+    # rundata.gaugedata.gtype[14] = 'lagrangian'
 
     # #Grid TD Canyon Entrance 5
     # xg, yg = (-111.613103, 43.9923232)
@@ -594,7 +615,7 @@ def setgeo(rundata):
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLargeLowRes.topo'])
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamSmallHiRes.topo'])
 
-    topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLatLong.topo'])
+    topo_data.topofiles.append([2, 1, 10, 0, 1e10, os.path.join(scratch_dir,'TetonDamLatLong.topo')]) #glues together directories (scratch_dir temp directory)
     # topo_data.topofiles.append([2, 1, 10, 0, 1e10, 'topos/TetonDamLarge.topo'])
 
 
