@@ -45,8 +45,15 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     plotdata.format = 'ascii'                # Format of output
 
     #------------------------------------------------------------------
+    # Setting global KML flags - NEW
+    #------------------------------------------------------------------
+
+
+
+    #------------------------------------------------------------------
     #SECTION FOR PLOTTING GAUGES - NEW
     #------------------------------------------------------------------
+
 
     print('Reading all gauges...')
     gauge_solutions = particle_tools.read_gauges(gaugenos='all', 
@@ -63,7 +70,7 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
         t = current_data.t
 
         # plot recent path:
-        t_path_length = 0.5   # length of path trailing particle
+        t_path_length = 60.0   # length of path trailing particle (how far in time (s))
         kwargs_plot_path = {'linewidth':1, 'color':'k'}
         particle_tools.plot_paths(gauge_solutions, 
                                   t1=t-t_path_length, t2=t, 
@@ -71,7 +78,7 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
                                   kwargs_plot=kwargs_plot_path)
 
         # plot current location:
-        kwargs_plot_point = {'marker':'o','markersize':3,'color':'k'}
+        kwargs_plot_point = {'marker':'o','markersize':3,'color':'W'} #point color
         particle_tools.plot_particles(gauge_solutions, t, 
                                       gaugenos=gaugenos_lagrangian, 
                                       kwargs_plot=kwargs_plot_point)  

@@ -16,7 +16,7 @@ CLAW_PKG = geoclaw               	   # Clawpack package to use
 EXE = xgeoclaw                 	   		# Executable to create
 SETRUN_FILE = setrun.py                  # File containing function to make data
 OUTDIR = _output                         # Directory for output
-SETPLOT_FILE = setplot_particles.py      # File containing function to set plots, edited 4/10
+SETPLOT_FILE = setplot_particlesKML.py      # File containing function to set plots, edited 4/10
 PLOTDIR = _plots               # Directory for plots
 
 # Environment variable FC should be set to fortran compiler, e.g. gfortran

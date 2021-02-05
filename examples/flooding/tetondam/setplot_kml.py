@@ -1,4 +1,3 @@
-
 """
 Set up the plot figures, axes, and items to be done for each frame.
 
@@ -11,6 +10,10 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from clawpack.geoclaw import topotools
+from clawpack.visclaw import gaugetools
+from clawpack.visclaw import particle_tools
+from clawpack.visclaw import legend_tools
+
 
 #--------------------------
 def setplot(plotdata):
