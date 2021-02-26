@@ -63,7 +63,7 @@ def setrun(claw_pkg='geoclaw'):
 
 
     # Time stepping
-    initial_dt = 1  # Initial time step
+    initial_dt = 0.5  # Initial time step
     fixed_dt = False   # Take constant time step
 
     # Output files
@@ -72,7 +72,7 @@ def setrun(claw_pkg='geoclaw'):
     if output_style == 1:
         # Total number of frames will be frames_per_minute*60*n_hours
 
-        n_hours = 20              # Total number of hours in simulation, changed 10.14.2020  should be 5      
+        n_hours = 24              # Total number of hours in simulation, changed 10.14.2020  should be 5      
         
 
         frames_per_minute = 1/30   # Frames every 1/2 hour
@@ -240,7 +240,7 @@ def setrun(claw_pkg='geoclaw'):
     # The current t, dt, and cfl will be printed every time step
     # at AMR levels <= verbosity.  Set verbosity = 0 for no printing.
     #   (E.g. verbosity == 2 means print only on levels 1 and 2.)
-    clawdata.verbosity = 1
+    clawdata.verbosity = 4
 
 
 
@@ -596,7 +596,7 @@ def setgeo(rundata):
     geo_data.sea_level = 0.0
     geo_data.dry_tolerance = 1.e-3
     geo_data.friction_forcing = True
-    geo_data.manning_coefficient = 0.06 # changed today 10142020, to 0.08 LI Developed  - need to make variable manning_coefficient
+    geo_data.manning_coefficient = 0.025 # changed today 10142020, to 0.08 LI Developed  - need to make variable manning_coefficient
     geo_data.friction_depth = 1.e6
 
     # Refinement data
@@ -604,7 +604,7 @@ def setgeo(rundata):
     refinement_data.wave_tolerance = 1.e-2
     refinement_data.deep_depth = 1e2
     refinement_data.max_level_deep = 3
-    refinement_data.variable_dt_refinement_ratios = False #(09/23/2020)
+    refinement_data.variable_dt_refinement_ratios = True #(09/23/2020)
 
     # == settopo.data values ==
     topo_data = rundata.topo_data

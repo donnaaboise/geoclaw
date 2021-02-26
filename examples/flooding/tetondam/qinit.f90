@@ -18,10 +18,10 @@ SUBROUTINE qinit(meqn,mbc,mx,my,xlower,ylower,dx,dy,q,maux,aux)
     REAL(kind=8), PARAMETER :: xll = -112.3895d0
     REAL(kind=8), PARAMETER :: x0 = -111.5391666666667d0  !! x-coords of Teton Dam
     REAL(kind=8), PARAMETER :: x1 = -111.24d0  !! Left edge of domain
-!!    REAL(kind=8), PARAMETER :: h0 = 1540.d0
-!!    REAL(kind=8), PARAMETER :: h1 = 1720.d0
-    REAL(kind=8), PARAMETER :: h0 = 1625.d0   !! Flat surface
-    REAL(kind=8), PARAMETER :: h1 = 1720.d0
+    REAL(kind=8), PARAMETER :: h0 = 1619.d0   !! Flat surface
+    REAL(kind=8), PARAMETER :: h1 = 1619.d0
+
+    real(kind=8), dimension(2) :: corner0, corner1
 
     INTEGER, PARAMETER :: nmax = 100
     REAL(kind=8), DIMENSION(nmax) :: xp,yp
@@ -29,7 +29,12 @@ SUBROUTINE qinit(meqn,mbc,mx,my,xlower,ylower,dx,dy,q,maux,aux)
 
     ! Other storage
     INTEGER :: i,j
-    REAL(kind=8) :: omega,x,y,eta
+    REAL(kind=8) :: omega,x,y,eta, totmass
+
+!!  Points at the entrance to the dam. 
+    real(kind=8) :: ly
+    data corner0 /-111.5329602010579d0,  43.90768251711403d0/
+    data corner1 /-111.5425694320295d0,  43.91291520283087d0/
 
     !! Capacity of reservoir at time of release : 251000 acre-feet
     !! 1 acre-foot = 1233.4829 m^3
@@ -41,15 +46,23 @@ SUBROUTINE qinit(meqn,mbc,mx,my,xlower,ylower,dx,dy,q,maux,aux)
 
     CALL set_reservoir_path(nmax,xp,yp)
 
+    totmass = 0
     DO i=1-mbc,mx+mbc
         x = xlower + (i - 0.5d0)*dx
         do j=1-mbc,my+mbc
            y = ylower + (j - 0.5d0) * dx
            q(1,i,j) = 0
-           IF (x .GT. x0) THEN
+
+           !! Line describing dam.  
+           ly = corner0(2) + (corner1(2) - corner0(2))/(corner1(1) - corner0(1))*(x - corner0(1))
+
+            if (y .gt. ly) then
               IF (point_in_poly(nmax,xp,yp,x,y)) THEN
+!!                 write(6,*) "in poly", x,y
                  eta = h0 + (h1-h0)/(x1-x0)*(x - x0)
                  q(1,i,j) =  MAX(0.d0,eta - aux(1,i,j))
+              elseif (abs(x-x0) .lt. 0.01d0 .and. abs(y-43.911) .lt. 0.01d0) then
+!!                  write(6,*) "not in poly", x,y
               ENDIF
            ENDIF
            q(2,i,j) = 0.d0
@@ -121,10 +134,17 @@ SUBROUTINE set_reservoir_path(nmax,xpath,ypath)
   n = 32
   ALLOCATE(wpath(2,n))
 
-  wpath1d = (/-111.5329602010579d0,43.90768251711403d0,  &
+  wpath1d = (/-111.4525518180650d0,  43.87284083784596d0, &
+       -111.4655146366021d0,  43.88648791247213d0,   &
+       -111.4742548002720d0,  43.89924049270922d0,    &
+       -111.4743486255008d0,  43.91523470848247d0,   &
+       -111.4878354873365d0,  43.92113549058154d0,   &
+       -111.5039146384135d0,  43.91948128966648d0,   &
+       -111.5182133156775d0,  43.91450172601051d0,   &
+       -111.5329602010579d0,  43.90768251711403d0,   &
        -111.5425694320295d0,  43.91291520283087d0,  &
        -111.5265517148000d0,  43.92985173935236d0,     &
-       -111.4838301614854d0,  43.93342747699161d0,  &
+       -111.4838301614854d0,  43.93972747699161d0,  &
        -111.4526923402719d0,  43.92275343741503d0,  &
        -111.4229733394132d0,  43.92102950267466d0,  &
        -111.3888345969115d0,  43.94256354582464d0,  &
@@ -145,14 +165,7 @@ SUBROUTINE set_reservoir_path(nmax,xpath,ypath)
        -111.4470054376565d0,  43.89319391079540d0,    &
        -111.4340292718339d0,  43.88128609194279d0,   &
        -111.4328310870467d0,  43.87453080137639d0,   &
-       -111.4525518180650d0,  43.87284083784596d0,    &
-       -111.4655146366021d0,  43.88648791247213d0,   &
-       -111.4742548002720d0,  43.89924049270922d0,    &
-       -111.4743486255008d0,  43.91523470848247d0,   &
-       -111.4878354873365d0,  43.92113549058154d0,   &
-       -111.5039146384135d0,  43.91948128966648d0,   &
-       -111.5182133156775d0,  43.91450172601051d0,   &
-       -111.5329602010579d0,  43.90768251711403d0/)   !! Last line repeats first line
+       -111.4525518180650d0,  43.87284083784596d0/)
 
   wpath = RESHAPE(wpath1d,(/2,n/))
 

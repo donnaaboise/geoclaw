@@ -21,6 +21,8 @@ from clawpack.visclaw import gaugetools
 from clawpack.visclaw import particle_tools
 from clawpack.visclaw import legend_tools
 
+from numpy import *
+
 #--------------------------
 def setplot(plotdata):                  #defining setplot command (indenting by Python)
 #--------------------------
@@ -43,6 +45,36 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     plotdata.verbose = False #always false 
 
     plotdata.format = 'ascii'                # Format of output
+
+
+    # Start transparency at 0.2
+
+
+    hr1 = array([0, 255, 255])/255
+    hr2 = array([0, 227, 242])/255
+    hr3 = array([0, 198, 229])/255
+    hr4 = array([0, 170, 216])/255
+    hr5 = array([0, 142, 203])/255
+    hr6 = array([0, 113, 191])/255
+    hr7 = array([0,  85, 178])/255
+    hr8 = array([0,  57, 165])/255
+    hr9 = array([0,  28, 152])/255
+    hr10 = array([0,   0, 139])/255
+
+    transparent = [0.0, 0.0, 0.0,0.0]
+
+
+
+    hec_ras_flooding = colormaps.make_colormap({0:transparent,
+                                                1.67:hr2,
+                                                3.33:hr3,
+                                                 5  :hr4,
+                                                6.67:hr5,
+                                                8.33:hr6,
+                                                10  :hr7,
+                                               11.67:hr8,
+                                                13.33:hr9,
+                                                15:hr10})
 
 
     #------------------------------------------------------------------
@@ -149,10 +181,14 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     #  Set several parameters for the Teton Dam Modeling in KML
     #-------------------------------------------------------------
     plotdata.kml_name = "Teton Dam Spero"
-    plotdata.kml_starttime = [1976,6,5,11,55,0]  # Date/time of event in UTC [None]
+    plotdata.kml_starttime = [1976,6,5,17,55,0]  # Date/time of event in UTC [None]
     plotdata.kml_tz_offset = 0    # Time zone offset (in hours) of event. [None]
 
     plotdata.kml_index_fname = "TetonDam"  # name for .kmz and .kml files ["_GoogleEarth"]
+
+    # Add [file_name,visibility]
+    plotdata.kml_user_files.append(['teton_dam_validate.kml',True])
+    plotdata.kml_user_files.append(['reservoir.kml',True])
 
     # Set to a URL where KMZ file will be published.
     #plotdata.kml_publish = 'https://sites.google.com/view/hannahspero/td_plot_outputs'
@@ -162,10 +198,7 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     #----------------------------------------------------------
     plotfigure = plotdata.new_plotfigure(name='Teton_Dam_KML',figno=1) #specifying specific desired plots
     plotfigure.show = True #showing what we plot (always on)
-    plotfigure.kwargs = {'figsize': (9,4)}
-    plotaxes = plotfigure.new_plotaxes('pcolor')
-    plotaxes.title = 'Teton_Dam_KML'
-    plotaxes.scaled = True
+    # plotfigure.kwargs = {'figsize': (9,4)}
 
     plotfigure.use_for_kml = True #output as KML required true to visualize GeoClaw in Google Earth
     plotfigure.kml_use_for_initial_view = True #no extra editing required 
@@ -173,9 +206,6 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     # Latlong box used for GoogleEarth
     plotfigure.kml_xlimits = [-112.36171859324912, -111.25911793671588] #coordinates of TetonLarge.topo
     plotfigure.kml_ylimits = [43.591904932832371, 43.977907507732617] #coordinates of TetonLarge.topo
-
-    # Particles
-    plotaxes.afteraxes = add_particles
 
     # Use computational coordinates for plotting
     plotfigure.kml_use_figure_limits = True #use the xlimits and ylimits above
@@ -193,6 +223,11 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
 
     # Water
     plotaxes = plotfigure.new_plotaxes('kml')
+
+    # Particles
+    # plotaxes.scaled = True
+    plotaxes.afteraxes = add_particles
+
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = geoplot.depth   # Plot height field h.
     plotitem.pcolor_cmap = geoplot.googleearth_flooding
@@ -203,6 +238,9 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
         geoplot.kml_build_colorbar(filename,cmap,cmin,cmax) #building the color bar
 
     plotfigure.kml_colorbar = kml_colorbar #colorbar will appear when shown on Google Earth
+
+
+
         
     #-----------------------------------------
     # Figures for gauges
@@ -244,7 +282,7 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     plotdata.parallel = False                 #
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
-    plotdata.print_framenos = range(0,1440,5)        # list of frames to print - can try ten
+    plotdata.print_framenos = range(0,50)        # list of frames to print - can try ten
     plotdata.print_gaugenos = 'all'           # list of gauges to print, linked to fignos above
     plotdata.print_fignos = 'all'            # list of figures to print
     plotdata.html = True                    # create html files of plots?

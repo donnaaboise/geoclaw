@@ -144,7 +144,7 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     #-------------------------------------------------------------
     plotdata.kml_name = "Teton Dam"
     plotdata.kml_starttime = [1976,6,5,17,55,0]  # Date/time of event in UTC [None]
-    plotdata.kml_tz_offset = 0    # Time zone offset (in hours) of event. [None]
+    plotdata.kml_tz_offset = 6    # Time zone offset (in hours) of event. [None]
 
     plotdata.kml_index_fname = "TetonDam"  # name for .kmz and .kml files ["_GoogleEarth"]
 
@@ -289,7 +289,7 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     plotdata.parallel = True                 #
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
-    plotdata.print_framenos = range(0,1440,10)        # list of frames to print
+    plotdata.print_framenos = range(0,1000)        # list of frames to print
     plotdata.print_gaugenos = 'all'           # list of gauges to print, linked to fignos above
     plotdata.print_fignos = 'all'            # list of figures to print
 
