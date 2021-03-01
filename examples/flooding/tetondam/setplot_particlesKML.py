@@ -97,8 +97,8 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
         t = current_data.t
 
         # plot recent path:
-        t_path_length = 60.0   # length of path trailing particle (how far in time (s))
-        kwargs_plot_path = {'linewidth':1, 'color':'k'}
+        t_path_length = 3600.0   # length of path trailing particle (how far in time (s))
+        kwargs_plot_path = {'linewidth':3, 'color':'k'}
         particle_tools.plot_paths(gauge_solutions, 
                                   t1=t-t_path_length, t2=t, 
                                   gaugenos=gaugenos_lagrangian, 
