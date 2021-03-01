@@ -18,8 +18,8 @@ SUBROUTINE qinit(meqn,mbc,mx,my,xlower,ylower,dx,dy,q,maux,aux)
     REAL(kind=8), PARAMETER :: xll = -112.3895d0
     REAL(kind=8), PARAMETER :: x0 = -111.5391666666667d0  !! x-coords of Teton Dam
     REAL(kind=8), PARAMETER :: x1 = -111.24d0  !! Left edge of domain
-    REAL(kind=8), PARAMETER :: h0 = 1619.d0   !! Flat surface
-    REAL(kind=8), PARAMETER :: h1 = 1619.d0
+    REAL(kind=8), PARAMETER :: h0 = 1617.0d0   !! Flat surface
+    REAL(kind=8), PARAMETER :: h1 = 1617.0d0
 
     real(kind=8), dimension(2) :: corner0, corner1
 

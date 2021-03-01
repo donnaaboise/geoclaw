@@ -105,7 +105,7 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
                                   kwargs_plot=kwargs_plot_path)
 
         # plot current location:
-        kwargs_plot_point = {'marker':'o','markersize':3,'color':'W'} #point color
+        kwargs_plot_point = {'marker':'o','markersize':10,'color':'W'} #point color
         particle_tools.plot_particles(gauge_solutions, t, 
                                       gaugenos=gaugenos_lagrangian, 
                                       kwargs_plot=kwargs_plot_point)  
@@ -181,7 +181,7 @@ def setplot(plotdata):                  #defining setplot command (indenting by 
     #  Set several parameters for the Teton Dam Modeling in KML
     #-------------------------------------------------------------
     plotdata.kml_name = "Teton Dam Spero"
-    plotdata.kml_starttime = [1976,6,5,17,55,0]  # Date/time of event in UTC [None]
+    plotdata.kml_starttime = [1976,6,5,18,55,0]  # Date/time of event in UTC [None]
     plotdata.kml_tz_offset = 0    # Time zone offset (in hours) of event. [None]
 
     plotdata.kml_index_fname = "TetonDam"  # name for .kmz and .kml files ["_GoogleEarth"]
