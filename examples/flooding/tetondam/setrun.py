@@ -604,7 +604,7 @@ def setgeo(rundata):
     refinement_data.wave_tolerance = 1.e-2
     refinement_data.deep_depth = 1e2
     refinement_data.max_level_deep = 3
-    refinement_data.variable_dt_refinement_ratios = True    #(09/23/2020)
+    refinement_data.variable_dt_refinement_ratios = False    #(09/23/2020)
 
     # == settopo.data values ==
     topo_data = rundata.topo_data
